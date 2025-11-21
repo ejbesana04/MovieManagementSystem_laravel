@@ -6,6 +6,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\GenreController;
 
@@ -19,9 +20,6 @@ Route::get('dashboard', function () {
 
     return view('dashboard', compact('movies', 'genres'));
 })->middleware(['auth', 'verified'])->name('dashboard');
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -42,12 +40,19 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
-Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
-Route::post('/movies', [MovieController::class, 'store'])->name('movies.store');
-Route::put('/movies/{movie}', [MovieController::class, 'update'])->name('movies.update');
-Route::delete('/movies/{movie}', [MovieController::class, 'destroy'])->name('movies.destroy');
+// ✅ Add your Movie System routes BELOW
 
-Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
-Route::post('/genres', [GenreController::class, 'store'])->name('genres.store');
-Route::put('/genres/{genre}', [GenreController::class, 'update'])->name('genres.update');
-Route::delete('/genres/{genre}', [GenreController::class, 'destroy'])->name('genres.destroy');
+Route::middleware(['auth'])->group(function () {
+
+    // Movies
+    Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
+    Route::post('/movies', [MovieController::class, 'store'])->name('movies.store');
+    Route::put('/movies/{movie}', [MovieController::class, 'update'])->name('movies.update');
+    Route::delete('/movies/{movie}', [MovieController::class, 'destroy'])->name('movies.destroy');
+
+    // Genres
+    Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
+    Route::post('/genres', [GenreController::class, 'store'])->name('genres.store');
+    Route::put('/genres/{genre}', [GenreController::class, 'update'])->name('genres.update');
+    Route::delete('/genres/{genre}', [GenreController::class, 'destroy'])->name('genres.destroy');
+});
