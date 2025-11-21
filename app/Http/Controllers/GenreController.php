@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 class GenreController extends Controller
 {
     public function index()
-    {
-        $genres = Genre::withCount('movies')->get();
-        return view('genres.index', compact('genres'));
-    }
+{
+    $genres = Genre::withCount('movies')->get();
+    return view('genre', compact('genres')); // no "genres." prefix
+}
+
 
     public function store(Request $request)
     {

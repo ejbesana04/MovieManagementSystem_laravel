@@ -1,14 +1,12 @@
 <x-layouts.app :title="__('Dashboard')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
 
-        <!-- Success Message -->
         @if(session('success'))
             <div class="rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/30 dark:text-green-300">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Stats Cards -->
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
                 <div class="flex items-center justify-between">
@@ -53,10 +51,8 @@
             </div>
         </div>
 
-        <!-- Movie Management Section -->
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             <div class="flex h-full flex-col p-6">
-                <!-- Add New Movie Form -->
                 <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Movie</h2>
 
@@ -126,7 +122,6 @@
                     </form>
                 </div>
 
-                <!-- Movie List Table -->
                 <div class="flex-1 overflow-auto">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Movie List</h2>
                     <div class="overflow-x-auto">
@@ -139,6 +134,7 @@
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Year</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Rating</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Director</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Synopsis</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Actions</th>
                                 </tr>
                             </thead>
@@ -151,9 +147,10 @@
                                         <td class="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $movie->release_year ?? '-' }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $movie->rating ?? '-' }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $movie->director ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-400 max-w-md">{{ $movie->synopsis ?? '-' }}</td>
                                         <td class="px-4 py-3 text-sm">
                                             <button onclick="editMovie({{ $movie->id }}, '{{ $movie->title }}', {{ $movie->genre_id ?? 'null' }}, '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ $movie->director }}', '{{ addslashes($movie->synopsis) }}')"
-                                                    class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                                     class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                                 Edit
                                             </button>
                                             <span class="mx-1 text-neutral-400">|</span>
@@ -166,10 +163,10 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-4 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                                        <td colspan="8" class="px-4 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
                                             No movies found. Add your first movie above!
                                         </td>
-                                    </tr>
+                                        </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -179,7 +176,6 @@
         </div>
     </div>
 
-    <!-- Edit Movie Modal -->
     <div id="editMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="w-full max-w-2xl rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
             <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Edit Movie</h2>
