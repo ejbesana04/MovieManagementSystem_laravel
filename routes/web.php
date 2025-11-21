@@ -19,6 +19,9 @@ Route::get('dashboard', function () {
 
     return view('dashboard', compact('movies', 'genres'));
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
