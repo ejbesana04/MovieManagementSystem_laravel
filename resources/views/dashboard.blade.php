@@ -15,10 +15,20 @@
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $movies->count() }}</h3>
                     </div>
                     <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900/30">
-                        <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                            class="h-6 w-6 text-blue-600 dark:text-blue-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="7.5" r="1.5"></circle>
+                            <circle cx="12" cy="16.5" r="1.5"></circle>
+                            <circle cx="7.5" cy="12" r="1.5"></circle>
+                            <circle cx="16.5" cy="12" r="1.5"></circle>
+
+                            <path d="M22 12h-2"></path>
                         </svg>
                     </div>
+
                 </div>
             </div>
 
@@ -29,10 +39,15 @@
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $genres->count() }}</h3>
                     </div>
                     <div class="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
-                        <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 text-green-600 dark:text-green-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                         </svg>
                     </div>
+
                 </div>
             </div>
 
@@ -43,10 +58,15 @@
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ number_format($movies->avg('rating'), 1) }}</h3>
                     </div>
                     <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
-                        <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 text-purple-600 dark:text-purple-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 17.25l-5.19 3.03 1.39-5.97L3 9.75l6.03-.52L12 3.75l2.97 5.48L21 9.75l-5.2 4.56 1.39 5.97L12 17.25z" />
                         </svg>
                     </div>
+
                 </div>
             </div>
         </div>
