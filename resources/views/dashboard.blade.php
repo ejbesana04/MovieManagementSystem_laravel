@@ -134,7 +134,7 @@
                             @enderror
                         </div>
 
-                        <div class="md:col-span-2 flex justify-end">
+                        <div class="md:col-span-2 flex justify-start">
                             <button type="submit" class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 Add Movie
                             </button>
