@@ -1,79 +1,73 @@
 <x-layouts.app :title="__('Dashboard')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
 
+        {{-- MODIFICATION START: Add ID to the session div --}}
         @if(session('success'))
-            <div class="rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            <div id="flash-message" class="rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/30 dark:text-green-300">
                 {{ session('success') }}
             </div>
         @endif
+        {{-- MODIFICATION END --}}
 
+        {{-- Dashboard Cards --}}
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+
+            {{-- Total Movies --}}
             <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Movies</p>
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $movies->count() }}</h3>
                     </div>
+
                     <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="h-6 w-6 text-blue-600 dark:text-blue-400"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <circle cx="12" cy="7.5" r="1.5"></circle>
-                            <circle cx="12" cy="16.5" r="1.5"></circle>
-                            <circle cx="7.5" cy="12" r="1.5"></circle>
-                            <circle cx="16.5" cy="12" r="1.5"></circle>
-
-                            <path d="M22 12h-2"></path>
-                        </svg>
+                        <i data-lucide="film" class="h-6 w-6 text-blue-600 dark:text-blue-400"></i>
                     </div>
-
                 </div>
             </div>
 
+            {{-- Total Genres --}}
             <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Genres</p>
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $genres->count() }}</h3>
                     </div>
+
                     <div class="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6 text-green-600 dark:text-green-400"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                        </svg>
+                        <i data-lucide="layers" class="h-6 w-6 text-green-600 dark:text-green-400"></i>
                     </div>
-
                 </div>
             </div>
 
+            {{-- Average Rating --}}
             <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Average Rating</p>
-                        <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ number_format($movies->avg('rating'), 1) }}</h3>
+                        <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+                            {{ number_format($movies->avg('rating') ?: 0, 1) }}
+                        </h3>
                     </div>
+
                     <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6 text-purple-600 dark:text-purple-400"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 17.25l-5.19 3.03 1.39-5.97L3 9.75l6.03-.52L12 3.75l2.97 5.48L21 9.75l-5.2 4.56 1.39 5.97L12 17.25z" />
-                        </svg>
+                        <i data-lucide="star" class="h-6 w-6 text-purple-600 dark:text-purple-400"></i>
                     </div>
-
                 </div>
             </div>
+
         </div>
+
+        {{-- Lucide Icons Script --}}
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            lucide.createIcons();
+        </script>
+
 
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             <div class="flex h-full flex-col p-6">
-                <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
+                <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Movie</h2>
 
                     <form action="{{ route('movies.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
@@ -170,7 +164,7 @@
                                         <td class="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-400 max-w-md">{{ $movie->synopsis ?? '-' }}</td>
                                         <td class="px-4 py-3 text-sm">
                                             <button onclick="editMovie({{ $movie->id }}, '{{ $movie->title }}', {{ $movie->genre_id ?? 'null' }}, '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ $movie->director }}', '{{ addslashes($movie->synopsis) }}')"
-                                                     class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                                            class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                                 Edit
                                             </button>
                                             <span class="mx-1 text-neutral-400">|</span>
@@ -243,11 +237,11 @@
 
                 <div class="mt-6 flex justify-end gap-3">
                     <button type="button" onclick="closeEditMovieModal()"
-                            class="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
+                                class="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
                         Cancel
                     </button>
                     <button type="submit"
-                            class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700">
+                                class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700">
                         Update Movie
                     </button>
                 </div>
@@ -255,7 +249,9 @@
         </div>
     </div>
 
+    {{-- MODIFICATION START: The New Script for the 3-Second Flash Message --}}
     <script>
+        // Existing modal functions
         function editMovie(id, title, genreId, release_year, rating, director, synopsis) {
             document.getElementById('editMovieModal').classList.remove('hidden');
             document.getElementById('editMovieModal').classList.add('flex');
@@ -272,5 +268,24 @@
             document.getElementById('editMovieModal').classList.add('hidden');
             document.getElementById('editMovieModal').classList.remove('flex');
         }
+
+        // New Flash Message Dismissal Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashMessage = document.getElementById('flash-message');
+            
+            if (flashMessage) {
+                // Set a timer to remove the element after 3000 milliseconds (3 seconds)
+                setTimeout(() => {
+                    flashMessage.style.transition = 'opacity 0.5s ease-out';
+                    flashMessage.style.opacity = '0';
+                    
+                    // After the fade-out, actually remove the element from the DOM
+                    setTimeout(() => {
+                        flashMessage.remove();
+                    }, 500); // 500ms should match the transition time
+                }, 3000); // Wait 3 seconds before starting the fade
+            }
+        });
     </script>
+    {{-- MODIFICATION END --}}
 </x-layouts.app>

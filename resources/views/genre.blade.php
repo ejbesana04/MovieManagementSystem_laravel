@@ -2,7 +2,8 @@
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
 
         @if(session('success'))
-            <div class="rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            {{-- 1. Changed ID to 'flash-message' --}}
+            <div id="flash-message" class="rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/30 dark:text-green-300">
                 {{ session('success') }}
             </div>
         @endif
@@ -10,7 +11,6 @@
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             <div class="flex h-full flex-col p-6">
 
-                <!-- Add New Genre Form -->
                 <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Genre</h2>
 
@@ -20,7 +20,7 @@
                             <div>
                                 <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Name</label>
                                 <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter genre name" required
-                                       class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
+                                        class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
                                 @error('name')
                                     <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
@@ -29,7 +29,7 @@
                             <div>
                                 <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Description</label>
                                 <input type="text" name="description" value="{{ old('description') }}" placeholder="Enter description (optional)"
-                                       class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
+                                        class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
                                 @error('description')
                                     <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
@@ -44,7 +44,6 @@
                     </form>
                 </div>
 
-                <!-- Genres Table -->
                 <div class="flex-1 overflow-auto">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Genre List</h2>
                     <div class="overflow-x-auto">
@@ -96,7 +95,6 @@
         </div>
     </div>
 
-    <!-- Edit Genre Modal -->
     <div id="editGenreModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="w-full max-w-2xl rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
             <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Edit Genre</h2>
@@ -145,5 +143,24 @@
             document.getElementById('editGenreModal').classList.add('hidden');
             document.getElementById('editGenreModal').classList.remove('flex');
         }
+
+        // New Flash Message
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashMessage = document.getElementById('flash-message');
+            
+            if (flashMessage) {
+                // Set a timer to remove the element after 3000 milliseconds (3 seconds)
+                setTimeout(() => {
+                    // 1. Start the CSS transition/fade-out animation
+                    flashMessage.style.transition = 'opacity 0.5s ease-out';
+                    flashMessage.style.opacity = '0';
+                    
+                    // 2. After the fade-out duration (0.5s), actually remove the element from the DOM
+                    setTimeout(() => {
+                        flashMessage.remove();
+                    }, 500); // 500ms should match the transition time
+                }, 3000); // Wait 3 seconds before starting the fade
+            }
+        });
     </script>
 </x-layouts.app>
