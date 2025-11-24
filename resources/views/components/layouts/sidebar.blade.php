@@ -8,7 +8,7 @@
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
     <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-        {{-- PASTED CODE BLOCK STARTS HERE --}}
+        
         <div class="flex flex-col items-start px-4 py-3 space-y-1">
             {{-- Logo Image Path --}}
             <img src="{{ asset('images/mms-logo.png') }}" 
