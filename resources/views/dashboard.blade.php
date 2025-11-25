@@ -29,7 +29,7 @@
             {{-- Total Movies --}}
             <div class="{{ $cardClass }}">
                 <div class="flex items-center justify-between">
-                    <div><p class="{{ $textMuted }}">Total Movies</p><h3 class="{{ $textBold }}">{{ $movies->count() }}</h3></div>
+                    <div><p class="{{ $textMuted }}">Total Films</p><h3 class="{{ $textBold }}">{{ $movies->count() }}</h3></div>
                     <div class="{{ $iconBaseClass }} border-blue-100 bg-blue-50"><i data-lucide="film" class="h-8 w-8 text-blue-600"></i></div>
                 </div>
             </div>
@@ -60,13 +60,13 @@
             <div class="lg:col-span-2 rounded-2xl bg-white p-6 shadow-xl border border-gray-200 min-h-[400px]">
                 
                 <div class="flex items-center justify-between mb-6 border-b pb-3 border-gray-200">
-                    <h2 class="text-2xl font-bold text-gray-900">⭐ Top Rated Movies</h2>
+                    <h2 class="text-1xl font-bold text-gray-900">⭐ Top Rated Films</h2>
                     
                     {{-- Button to Trigger Add Movie Modal --}}
                     <button type="button" 
                             onclick="resetModalForAdd()"
                             class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 shadow-md flex items-center gap-1 shrink-0">
-                        <i data-lucide="plus-circle" class="h-4 w-4"></i> Add Movie
+                        <i data-lucide="plus-circle" class="h-4 w-4"></i> Add Film
                     </button>
                 </div>
                 
@@ -115,7 +115,7 @@
                 
                 {{-- Recent Activity --}}
                 <div class="rounded-2xl bg-white p-6 shadow-xl border border-gray-200 h-full">
-                    <h3 class="text-xl font-bold text-gray-900 border-b pb-3 border-gray-200">🔍 Recent Activity</h3>
+                    <h3 class="text-1xl font-bold text-gray-900 border-b pb-3 border-gray-200">🔍 Recent Activity</h3>
                     <ul class="mt-4 space-y-3">
                         <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="check-circle" class="h-4 w-4 text-green-600 mt-1 shrink-0"></i> Movie **'Dune'** updated (1 min ago)</li>
                         <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="plus" class="h-4 w-4 text-blue-600 mt-1 shrink-0"></i> Movie **'Inception'** added (3 hrs ago)</li>
@@ -140,7 +140,7 @@
 
     {{-- Table Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-3 border-gray-200">
-        <h2 class="text-2xl font-bold text-gray-900">📊 Movie List</h2>
+        <h2 class="text-1xl font-bold text-gray-900">📊 Film List</h2>
     </div>
 
     {{-- Table Wrapper --}}
@@ -372,9 +372,9 @@
             
             if (!form) return; 
             
-            modalTitle.textContent = 'Add New Movie';
+            modalTitle.textContent = 'Add New Film';
             form.action = "{{ route('movies.store') }}"; 
-            submitButton.textContent = 'Add Movie';
+            submitButton.textContent = 'Add Film';
             
             // Set method to POST for the store route
             if (methodField) {
@@ -445,7 +445,7 @@
             const { viewModalTitle, viewTitle, viewDirector, viewReleaseYear, viewRating, viewGenre, viewSynopsis } = getDomElements();
 
             // Populate the view modal fields
-            viewModalTitle.textContent = 'Movie Details: ' + title;
+            viewModalTitle.textContent = 'Film Details: ' + title;
             viewTitle.textContent = title;
             viewDirector.textContent = director || 'N/A';
             viewReleaseYear.textContent = release_year || 'N/A';

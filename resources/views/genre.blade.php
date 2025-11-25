@@ -22,7 +22,7 @@
 
         {{-- Add Genre Form --}}
         <div class="{{ $cardClass }}">
-            <h2 class="text-2xl font-bold text-gray-900 border-b pb-3 mb-6 border-gray-200">
+            <h2 class="text-1xl font-bold text-gray-900 border-b pb-3 mb-6 border-gray-200">
                 🎬 Add New Genre
             </h2>
 
@@ -58,7 +58,7 @@
         {{-- Genre List Table --}}
         <div class="{{ $cardClass }}">
             <div class="flex items-center justify-between mb-6 border-b pb-3 border-gray-200">
-                <h2 class="text-2xl font-bold text-gray-900">📋 Genre List</h2>
+                <h2 class="text-1xl font-bold text-gray-900">📋 Genre List</h2>
             </div>
 
             {{-- Table with gradient header --}}
@@ -69,7 +69,7 @@
                             <th class="px-4 py-3 text-left text-sm font-bold rounded-tl-xl">#</th>
                             <th class="px-4 py-3 text-left text-sm font-bold">Name</th>
                             <th class="px-4 py-3 text-left text-sm font-bold">Description</th>
-                            <th class="px-4 py-3 text-center text-sm font-bold">Movies</th>
+                            <th class="px-4 py-3 text-center text-sm font-bold">Films</th>
                             <th class="px-4 py-3 text-left text-sm font-bold rounded-tr-xl">Actions</th>
                         </tr>
                     </thead>
