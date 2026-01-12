@@ -58,17 +58,34 @@
             
             {{-- LEFT SECTION: Movie Posters/Cards (2/3 width) --}}
             <div class="lg:col-span-2 rounded-2xl bg-white p-6 shadow-xl border border-gray-200 min-h-[400px]">
-                
-                <div class="flex items-center justify-between mb-6 border-b pb-3 border-gray-200">
-                    <h2 class="text-1xl font-bold text-gray-900">⭐ Top Rated Films</h2>
-                    
-                    {{-- Button to Trigger Add Movie Modal --}}
-                    <button type="button" 
-                            onclick="resetModalForAdd()"
-                            class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 shadow-md flex items-center gap-1 shrink-0">
-                        <i data-lucide="plus-circle" class="h-4 w-4"></i> Add Film
-                    </button>
-                </div>
+    
+    <div class="flex items-center justify-between mb-6 border-b pb-3 border-gray-200">
+        <h2 class="text-1xl font-bold text-gray-900">⭐ Top Rated Films</h2>
+        
+        <div class="flex items-center gap-3">
+            {{-- Export to PDF Form --}}
+            <form method="GET" action="{{ route('movies.export') }}" class="inline">
+                <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="genre_filter" value="{{ request('genre_filter') }}">
+
+                <button type="submit"
+                    class="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Export to PDF
+                </button>
+            </form>
+
+            {{-- Button to Trigger Add Movie Modal --}}
+            <button type="button" 
+                    onclick="resetModalForAdd()"
+                    class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 shadow-md flex items-center gap-1 shrink-0">
+                <i data-lucide="plus-circle" class="h-4 w-4"></i> Add Film
+            </button>
+        </div>
+    </div>
                 
                 {{-- Movie Card Grid (Showing up to 4 featured movies) --}}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -133,7 +150,56 @@
             </div>
         </div>
 
-        
+        {{-- 2. Search & Filter Section --}}
+        <div class="rounded-2xl border mb-10 border-gray-200 bg-white p-6 shadow-xl">
+            <h2 class="mb-4 text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i data-lucide="search" class="h-5 w-5 text-blue-600"></i>
+                Search & Filter Vault
+            </h2>
+
+            <form action="{{ route('movies.index') }}" method="GET" class="grid gap-4 md:grid-cols-3">
+                <div class="md:col-span-1">
+                    <label class="{{ $labelClass }}">Search</label>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Search by title or director..."
+                        class="{{ $inputClass }} !py-2 !text-sm"
+                    >
+                </div>
+
+                <div class="md:col-span-1">
+                    <label class="{{ $labelClass }}">Filter by Genre</label>
+                    <select
+                        name="genre_filter"
+                        class="{{ $inputClass }} !py-2 !text-sm cursor-pointer"
+                    >
+                        <option value="">All Genres</option>
+                        @foreach($genres as $genre)
+                            <option value="{{ $genre->id }}" {{ request('genre_filter') == $genre->id ? 'selected' : '' }}>
+                                {{ $genre->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex items-end gap-2 md:col-span-1">
+                    <button
+                        type="submit"
+                        class="flex-1 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 shadow-md"
+                    >
+                        Apply Filters
+                    </button>
+                    <a
+                        href="{{ route('movies.index') }}"
+                        class="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100"
+                    >
+                        Clear
+                    </a>
+                </div>
+            </form>
+        </div>
 
         {{-- 3. Detailed Movie List Table Section --}}
 <div class="flex-1 rounded-2xl bg-white p-8 shadow-xl border border-gray-200 h-fit">
@@ -141,14 +207,17 @@
     {{-- Table Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-3 border-gray-200">
         <h2 class="text-1xl font-bold text-gray-900">📊 Film List</h2>
-    </div>
+</div>
+    
 
     {{-- Table Wrapper --}}
     <div class="w-full overflow-x-hidden rounded-xl border border-gray-200 shadow-sm">
         <table class="w-full table-auto">
             <thead>
                 <tr class="border-b border-gray-200 bg-gray-50 sticky top-0">
+
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">#</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Poster</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Title</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Genre</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Year</th>
@@ -162,6 +231,20 @@
                 @forelse($movies as $movie)
                     <tr class="transition-colors hover:bg-blue-50">
                         <td class="px-4 py-3 text-sm text-gray-600">{{ $loop->iteration }}</td>
+                        {{-- Photo Column --}}
+                    <td class="px-4 py-3">
+                        @if($movie->photo)
+                            <img
+                                src="{{ Storage::url($movie->photo) }}"
+                                alt="{{ $movie->title }}"
+                                class="h-10 w-10 rounded-lg object-cover ring-2 ring-blue-100"
+                            >
+                        @else
+                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 border border-blue-100 text-[10px] font-bold text-blue-600">
+                                {{ strtoupper(substr($movie->title, 0, 2)) }}
+                            </div>
+                        @endif
+                    </td>
                         <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $movie->title }}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">{{ $movie->genre?->name ?? 'N/A' }}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">{{ $movie->release_year ?? '-' }}</td>
@@ -171,7 +254,7 @@
                         <td class="px-4 py-3 text-sm min-w-[120px]">
                             <div class="flex items-center space-x-3">
                                 {{-- Edit --}}
-                                <button onclick="editMovie({{ $movie->id }}, '{{ addslashes($movie->title) }}', {{ $movie->genre_id ?? 'null' }}, '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ addslashes($movie->director) }}', '{{ addslashes($movie->synopsis) }}')"
+                                <button onclick="editMovie({{ $movie->id }}, '{{ addslashes($movie->title) }}', {{ $movie->genre_id ?? 'null' }}, '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ addslashes($movie->director) }}', '{{ addslashes($movie->synopsis) }}', '{{ $movie->photo }}')"
                                     class="group flex items-center gap-1 text-blue-600 font-medium transition-colors hover:text-blue-800 rounded-md p-1">
                                     <i data-lucide="square-pen" class="h-4 w-4"></i> Edit
                                 </button>
@@ -184,8 +267,7 @@
                                     @method('DELETE')
                                     <button type="submit" 
                                              class="group flex items-center gap-1 text-red-600 font-medium transition-colors hover:text-red-800 rounded-md p-1">
-                                        <i data-lucide="trash-2" class="h-4 w-4"></i> Delete
-                                    </button>
+                                        <i data-lucide="trash-2" class="h-4 w-4"></i> Trash</button>
                                 </form>
                             </div>
                         </td>
@@ -207,13 +289,76 @@
 
     </div>
     
-    {{-- Original Edit/Add Modal --}}
-    <div id="editMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
-            
-            <h2 id="modalTitle" class="mb-4 text-xl font-bold text-gray-900">Add New Movie</h2>
+    {{-- Add Movie Modal --}}
+    <div id="addMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
+            <h2 id="addModalTitle" class="mb-4 text-xl font-bold text-gray-900">Add New Movie</h2>
 
-            <form id="editMovieForm" method="POST">
+            <form id="addMovieForm" method="POST" action="{{ route('movies.store') }}" enctype="multipart/form-data">
+                @csrf
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div><label class="{{ $labelClass }}">Title</label><input type="text" id="add_title" name="title" required class="{{ $inputClass }}"></div>
+                    <div><label class="{{ $labelClass }}">Director</label><input type="text" id="add_director" name="director" class="{{ $inputClass }}"></div>
+                    <div><label class="{{ $labelClass }}">Release Year</label><input type="number" id="add_release_year" name="release_year" class="{{ $inputClass }}"></div>
+                    <div><label class="{{ $labelClass }}">Rating (0-10)</label><input type="number" step="0.1" max="10" min="0" id="add_rating" name="rating" class="{{ $inputClass }}"></div>
+                    <div>
+                        <label class="{{ $labelClass }}">Genre</label>
+                        <select id="add_genre_id" name="genre_id" class="{{ $inputClass }}">
+                            <option value="" class="text-gray-400">Select a genre</option>
+                            @foreach($genres as $genre)
+                                <option value="{{ $genre->id }}" class="text-gray-800">{{ $genre->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="{{ $labelClass }}">Synopsis</label>
+                        <textarea id="add_synopsis" name="synopsis" class="h-24 {{ $inputClass }}"></textarea>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 mt-4">
+                    <label class="{{ $labelClass }}">Movie Poster</label>
+                    <div id="addCurrentPhotoPreview" class="mb-4">
+                        <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
+                            <p class="text-sm text-gray-500">No poster uploaded yet</p>
+                        </div>
+                    </div>
+
+                    <input
+                        type="file"
+                        name="photo"
+                        id="add_photo"
+                        accept="image/jpeg,image/png,image/jpg"
+                        class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 transition-all cursor-pointer"
+                    >
+                    <p class="mt-1 text-xs text-gray-500">
+                        JPG, PNG or JPEG. Max 2MB.
+                    </p>
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" onclick="closeAddMovieModal()"
+                            class="rounded-xl border border-gray-300 bg-gray-100 px-5 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-200">
+                        Cancel
+                    </button>
+                    <button type="submit" id="addModalSubmitButton"
+                            class="rounded-xl bg-blue-600 px-5 py-2 text-base font-medium text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200">
+                        Add Movie
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Original Edit Modal (unchanged ids kept) --}}
+    <div id="editMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
+            
+            <h2 id="modalTitle" class="mb-4 text-xl font-bold text-gray-900">Edit Movie</h2>
+
+            <form id="editMovieForm" method="POST" enctype="multipart/form-data"> 
                 @csrf
                 @method('PUT') 
 
@@ -244,6 +389,32 @@
                     </div>
                 </div>
 
+                {{-- Photo Upload with Preview Style --}}
+<div class="md:col-span-2">
+    <label class="{{ $labelClass }}">Movie Poster</label>
+    
+    <div id="currentPhotoPreview" class="mb-4">
+        {{-- Default state for "Add" mode --}}
+        <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
+            <p class="text-sm text-gray-500">No poster uploaded yet</p>
+        </div>
+    </div>
+
+    <input
+        type="file"
+        name="photo"
+        id="edit_photo"
+        accept="image/jpeg,image/png,image/jpg"
+        class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 transition-all cursor-pointer"
+    >
+    <p class="mt-1 text-xs text-gray-500">
+        Leave empty to keep current photo. JPG, PNG or JPEG. Max 2MB.
+    </p>
+    @error('photo')
+        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
                 {{-- Modal Actions --}}
                 <div class="mt-6 flex justify-end gap-3">
                     <button type="button" onclick="closeEditMovieModal()"
@@ -261,7 +432,7 @@
     
     {{-- View Details Modal --}}
     <div id="viewDetailsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
             <h2 id="viewModalTitle" class="mb-6 text-2xl font-bold text-gray-900 border-b pb-3">Movie Details</h2>
 
             <div class="grid gap-4 md:grid-cols-2">
@@ -319,25 +490,36 @@
     {{-- Scripting --}}
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // --- Shared Functions ---
-
         function getDomElements() {
-            const form = document.getElementById('editMovieForm');
             return {
-                // Edit Modal Elements
+                // Add modal / form
+                addModal: document.getElementById('addMovieModal'),
+                addForm: document.getElementById('addMovieForm'),
+                addModalTitle: document.getElementById('addModalTitle'),
+                addSubmitButton: document.getElementById('addModalSubmitButton'),
+                addTitle: document.getElementById('add_title'),
+                addDirector: document.getElementById('add_director'),
+                addReleaseYear: document.getElementById('add_release_year'),
+                addRating: document.getElementById('add_rating'),
+                addGenreId: document.getElementById('add_genre_id'),
+                addSynopsis: document.getElementById('add_synopsis'),
+                addPhotoPreview: document.getElementById('addCurrentPhotoPreview'),
+
+                // Edit modal / form (existing)
                 editModal: document.getElementById('editMovieModal'),
-                form: form,
+                editForm: document.getElementById('editMovieForm'),
                 modalTitle: document.getElementById('modalTitle'),
-                submitButton: document.getElementById('modalSubmitButton'),
-                methodField: form ? form.querySelector('input[name="_method"]') : null,
+                modalSubmitButton: document.getElementById('modalSubmitButton'),
+                editMethodField: (document.getElementById('editMovieForm') ? document.getElementById('editMovieForm').querySelector('input[name="_method"]') : null),
                 editTitle: document.getElementById('edit_title'),
                 editDirector: document.getElementById('edit_director'),
                 editReleaseYear: document.getElementById('edit_release_year'),
                 editRating: document.getElementById('edit_rating'),
                 editGenreId: document.getElementById('edit_genre_id'),
                 editSynopsis: document.getElementById('edit_synopsis'),
+                currentPhotoPreview: document.getElementById('currentPhotoPreview'),
 
-                // View Modal Elements 
+                // View modal elements
                 viewModal: document.getElementById('viewDetailsModal'),
                 viewModalTitle: document.getElementById('viewModalTitle'),
                 viewTitle: document.getElementById('view_title'),
@@ -349,16 +531,31 @@
             };
         }
 
-        // --- Edit/Add Modal Handlers ---
+        // Modal open/close helpers
+        function openAddMovieModal() {
+            const { addModal } = getDomElements();
+            if (addModal) {
+                addModal.classList.remove('hidden');
+                addModal.classList.add('flex');
+                setTimeout(() => lucide.createIcons(), 100);
+            }
+        }
+        function closeAddMovieModal() {
+            const { addModal } = getDomElements();
+            if (addModal) {
+                addModal.classList.add('hidden');
+                addModal.classList.remove('flex');
+            }
+        }
 
         function openEditModal() {
             const { editModal } = getDomElements();
             if (editModal) {
                 editModal.classList.remove('hidden');
                 editModal.classList.add('flex');
+                setTimeout(() => lucide.createIcons(), 100);
             }
         }
-
         function closeEditMovieModal() {
             const { editModal } = getDomElements();
             if (editModal) {
@@ -367,72 +564,86 @@
             }
         }
 
+        // Reset/Add modal
         function resetModalForAdd() {
-            const { form, modalTitle, submitButton, methodField, editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis } = getDomElements(); 
-            
-            if (!form) return; 
-            
-            modalTitle.textContent = 'Add New Film';
-            form.action = "{{ route('movies.store') }}"; 
-            submitButton.textContent = 'Add Film';
-            
-            // Set method to POST for the store route
-            if (methodField) {
-                 methodField.disabled = true;
-                 methodField.value = 'POST';
+            const { addForm, addModalTitle, addSubmitButton, addTitle, addDirector, addReleaseYear, addRating, addGenreId, addSynopsis, addPhotoPreview } = getDomElements();
+            if (!addForm) return;
+
+            addModalTitle.textContent = 'Add New Film';
+            addForm.action = "{{ route('movies.store') }}";
+            addSubmitButton.textContent = 'Add Film';
+            addForm.reset();
+
+            // Reset preview
+            if (addPhotoPreview) {
+                addPhotoPreview.innerHTML = `
+                    <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
+                        <p class="text-sm text-gray-500">No poster uploaded yet</p>
+                    </div>
+                `;
             }
-            
-            form.reset(); 
-            // Re-enable all fields for adding
-            [editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis].forEach(el => {
-                if (el) el.disabled = false;
-            });
-            
-            openEditModal();
+
+            // Enable fields
+            [addTitle, addDirector, addReleaseYear, addRating, addGenreId, addSynopsis].forEach(el => { if (el) el.disabled = false; });
+
+            openAddMovieModal();
         }
 
-        function editMovie(id, title, genreId, release_year, rating, director, synopsis) {
-            const { form, modalTitle, submitButton, methodField, editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis } = getDomElements(); 
+        // Edit modal population (unchanged behavior but targeted to edit form)
+        function editMovie(id, title, genreId, release_year, rating, director, synopsis, photo) {
+            const { editForm, modalTitle, modalSubmitButton, editMethodField, editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis, currentPhotoPreview } = getDomElements();
+            if (!editForm) return;
 
-            if (!form) return; 
+            modalTitle.textContent = 'Edit Film: ' + title;
+            editForm.action = `/movies/${id}`;
+            modalSubmitButton.textContent = 'Update Film';
 
-            modalTitle.textContent = 'Edit Movie: ' + title;
-            form.action = `/movies/${id}`; 
-            submitButton.textContent = 'Update Movie';
-            
-            // Set method to PUT for the update route
-            if (methodField) {
-                 methodField.disabled = false;
-                 methodField.value = 'PUT';
+            if (editMethodField) {
+                editMethodField.disabled = false;
+                editMethodField.value = 'PUT';
             }
-            
-            // Populate fields
-            editTitle.value = title;
-            editDirector.value = director;
-            editReleaseYear.value = release_year;
-            editRating.value = rating;
+
+            editTitle.value = title || '';
+            editDirector.value = director || '';
+            editReleaseYear.value = release_year || '';
+            editRating.value = rating || '';
             editGenreId.value = genreId || '';
-            editSynopsis.value = synopsis;
+            editSynopsis.value = synopsis || '';
 
-            // Enable fields for editing
-            [editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis].forEach(el => {
-                if (el) el.disabled = false;
-            });
+            if (currentPhotoPreview) {
+                if (photo && photo !== 'null') {
+                    currentPhotoPreview.innerHTML = `
+                        <div class="flex items-center gap-3 rounded-lg border border-neutral-200 p-3 bg-white shadow-sm">
+                            <img src="/storage/${photo}" alt="${title}" class="h-16 w-16 rounded-lg object-cover ring-2 ring-blue-50">
+                            <div>
+                                <p class="text-sm font-bold text-neutral-800">Current Poster</p>
+                                <p class="text-xs text-neutral-500">Upload new photo to replace</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    currentPhotoPreview.innerHTML = `
+                        <div class="rounded-lg border border-dashed border-neutral-300 p-4 text-center bg-gray-50">
+                            <p class="text-sm text-neutral-500">No poster uploaded</p>
+                        </div>
+                    `;
+                }
+            }
+
+            [editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis].forEach(el => { if (el) el.disabled = false; });
 
             openEditModal();
         }
 
-        // --- View Details Modal Handlers ---
-
+        // View modal handlers
         function openViewModal() {
             const { viewModal } = getDomElements();
             if (viewModal) {
                 viewModal.classList.remove('hidden');
                 viewModal.classList.add('flex');
-                setTimeout(() => lucide.createIcons(), 100); 
+                setTimeout(() => lucide.createIcons(), 100);
             }
         }
-
         function closeViewDetailsModal() {
             const { viewModal } = getDomElements();
             if (viewModal) {
@@ -440,11 +651,8 @@
                 viewModal.classList.remove('flex');
             }
         }
-
         function viewMovieDetails(title, genreName, release_year, rating, director, synopsis) {
             const { viewModalTitle, viewTitle, viewDirector, viewReleaseYear, viewRating, viewGenre, viewSynopsis } = getDomElements();
-
-            // Populate the view modal fields
             viewModalTitle.textContent = 'Film Details: ' + title;
             viewTitle.textContent = title;
             viewDirector.textContent = director || 'N/A';
@@ -452,12 +660,10 @@
             viewRating.textContent = rating || 'N/A';
             viewGenre.textContent = genreName || 'N/A';
             viewSynopsis.textContent = synopsis || 'No synopsis provided.';
-            
             openViewModal();
         }
 
-        // --- Initialization ---
-
+        // Initialization
         function initializeDashboardScripts() {
             lucide.createIcons();
 
@@ -475,6 +681,5 @@
         document.addEventListener('livewire:navigated', initializeDashboardScripts);
         document.addEventListener('turbo:load', initializeDashboardScripts);
         document.addEventListener('turbolinks:load', initializeDashboardScripts);
-
     </script>
 </x-layouts.app>

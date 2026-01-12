@@ -22,6 +22,7 @@ return new class extends Migration
         $table->decimal('rating', 3, 1)->nullable();
         $table->string('director')->nullable();
         $table->text('synopsis')->nullable();
+        $table->string('photo')->nullable();
         $table->timestamps();
     });
 }

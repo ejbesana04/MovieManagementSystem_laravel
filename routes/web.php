@@ -14,8 +14,23 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+
 Route::get('dashboard', function () {
-    $movies = App\Models\Movie::with('genre')->get();
+    $query = App\Models\Movie::with('genre');
+
+    if (request()->filled('search')) {
+        $searchTerm = request('search');
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('title', 'like', "%{$searchTerm}%")
+              ->orWhere('director', 'like', "%{$searchTerm}%");
+        });
+    }
+
+    if (request()->filled('genre_filter') && request('genre_filter') != '') {
+        $query->where('genre_id', request('genre_filter'));
+    }
+
+    $movies = $query->latest()->get();
     $genres = App\Models\Genre::all();
 
     return view('dashboard', compact('movies', 'genres'));
@@ -43,6 +58,13 @@ Route::middleware(['auth'])->group(function () {
 // ✅ Add your Movie System routes BELOW
 
 Route::middleware(['auth'])->group(function () {
+
+    //Movie Soft Delete / Trash Management
+    Route::get('/movies/trash', [MovieController::class, 'trash'])->name('movies.trash');
+    Route::post('/movies/{id}/restore', [MovieController::class, 'restore'])->name('movies.restore');
+    Route::delete('/movies/{id}/force-delete', [MovieController::class, 'forceDelete'])->name('movies.force-delete');
+
+    Route::get('/movies/export', [MovieController::class, 'export'])->name('movies.export');
 
     // Movies
     Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
