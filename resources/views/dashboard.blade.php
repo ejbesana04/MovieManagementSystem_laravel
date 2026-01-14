@@ -1,682 +1,597 @@
 <x-layouts.app :title="__('Dashboard')">
     
-    <div class="flex h-full w-full flex-1 flex-col gap-8 p-6 lg:p-10 bg-gray-50 text-gray-800">
+    <div class="flex h-full w-full flex-1 flex-col gap-8 p-6 lg:p-10 bg-slate-50/50 text-slate-800 font-sans relative">
 
-        {{-- Flash Message --}}
+        {{-- Flash Message (Floating Toast) --}}
         @if(session('success'))
-            <div id="flash-message" class="rounded-xl bg-green-100 p-4 text-green-700 shadow-md border border-green-200">
-                {{ session('success') }}
+            <div id="flash-message" class="fixed top-6 right-6 z-[100] rounded-xl bg-emerald-500 text-white px-4 py-3 shadow-xl flex items-center gap-2 animate-in slide-in-from-right-5 transition-all duration-500">
+                <i data-lucide="check-circle" class="h-5 w-5"></i>
+                <span class="font-bold text-sm">{{ session('success') }}</span>
             </div>
         @endif
 
-        {{-- PHP Variable Definitions --}}
+        {{-- PHP Definitions --}}
         @php
-            // Light Theme Styles
-            $cardClass = "relative overflow-hidden rounded-2xl bg-white p-6 shadow-xl border border-gray-200 transition-transform duration-200 hover:scale-[1.01] hover:shadow-blue-100";
-            $iconBaseClass = "rounded-2xl border-4 p-3";
-            $textMuted = "text-base font-medium text-gray-500";
-            $textBold = "mt-2 text-4xl font-extrabold text-gray-900";
-            $inputClass = "w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-3 text-base " . 
-                            "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 " .
-                            "text-gray-800 placeholder-gray-400 disabled:bg-gray-100 disabled:text-gray-500"; 
-            $labelClass = "mb-2 block text-sm font-medium text-gray-700";
-            $errorClass = "mt-1 text-xs text-red-500";
-            $headerClass = "mb-6 text-2xl font-bold text-gray-900 border-b pb-3 border-gray-200";
+            // Updated Card Style to match Genre/Trash aesthetic
+            $cardClass = "group relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm border border-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-slate-200";
+            
+            // Icon Backgrounds
+            $iconBaseClass = "rounded-xl p-3 flex items-center justify-center transition-colors";
+            
+            // Text Styles
+            $textMuted = "text-xs font-bold text-slate-400 uppercase tracking-wider";
+            $textBold = "mt-2 text-3xl font-black text-slate-800";
+            
+            // Standard Inputs
+            $inputClass = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold shadow-sm transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 text-slate-800 placeholder-slate-400"; 
+            
+            $headerClass = "flex items-center justify-between mb-6 border-b border-slate-100 pb-4";
+            $labelClass = "block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2";
         @endphp
 
-        {{-- 1. Full-Width Stats Bar (3 Cards) --}}
+        {{-- 1. Full-Width Stats Bar --}}
         <div class="grid auto-rows-min gap-6 md:grid-cols-3"> 
             {{-- Total Movies --}}
             <div class="{{ $cardClass }}">
-                <div class="flex items-center justify-between">
-                    <div><p class="{{ $textMuted }}">Total Films</p><h3 class="{{ $textBold }}">{{ $movies->count() }}</h3></div>
-                    <div class="{{ $iconBaseClass }} border-blue-100 bg-blue-50"><i data-lucide="film" class="h-8 w-8 text-blue-600"></i></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="{{ $textMuted }}">Library Size</p>
+                        <h3 class="{{ $textBold }}">{{ $movies->count() }} <span class="text-lg font-medium text-slate-400">Films</span></h3>
+                    </div>
+                    <div class="{{ $iconBaseClass }} bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white">
+                        <i data-lucide="film" class="h-6 w-6"></i>
+                    </div>
                 </div>
+                {{-- Decorative background icon --}}
+                <i data-lucide="film" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
             </div>
 
             {{-- Total Genres --}}
             <div class="{{ $cardClass }}">
-                <div class="flex items-center justify-between">
-                    <div><p class="{{ $textMuted }}">Total Genres</p><h3 class="{{ $textBold }}">{{ $genres->count() }}</h3></div>
-                    <div class="{{ $iconBaseClass }} border-green-100 bg-green-50"><i data-lucide="layers" class="h-8 w-8 text-green-600"></i></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="{{ $textMuted }}">Categories</p>
+                        <h3 class="{{ $textBold }}">{{ $genres->count() }} <span class="text-lg font-medium text-slate-400">Genres</span></h3>
+                    </div>
+                    <div class="{{ $iconBaseClass }} bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white">
+                        <i data-lucide="layers" class="h-6 w-6"></i>
+                    </div>
                 </div>
+                 <i data-lucide="layers" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
             </div>
 
             {{-- Average Rating --}}
             <div class="{{ $cardClass }}">
-                <div class="flex items-center justify-between">
-                    <div><p class="{{ $textMuted }}">Average Rating</p><h3 class="{{ $textBold }}">{{ number_format($movies->avg('rating') ?: 0, 1) }}</h3></div>
-                    <div class="{{ $iconBaseClass }} border-purple-100 bg-purple-50"><i data-lucide="star" class="h-8 w-8 text-purple-600"></i></div>
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="{{ $textMuted }}">Avg Quality</p>
+                        <h3 class="{{ $textBold }}">{{ number_format($movies->avg('rating') ?: 0, 1) }} <span class="text-lg font-medium text-slate-400">/10</span></h3>
+                    </div>
+                    <div class="{{ $iconBaseClass }} bg-amber-50 text-amber-500 group-hover:bg-amber-500 group-hover:text-white">
+                        <i data-lucide="star" class="h-6 w-6 fill-current"></i>
+                    </div>
                 </div>
+                <i data-lucide="star" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
             </div>
         </div>
 
-        
-
-        {{-- 2. Visual Content Grid (Movie Cards, Charts, and Activity) --}}
+        {{-- 2. Visual Content Grid --}}
         <div class="grid gap-8 lg:grid-cols-3 flex-1 items-stretch">
             
-            {{-- LEFT SECTION: Movie Posters/Cards (2/3 width) --}}
-            <div class="lg:col-span-2 rounded-2xl bg-white p-6 shadow-xl border border-gray-200 min-h-[400px]">
-    
-    <div class="flex items-center justify-between mb-6 border-b pb-3 border-gray-200">
-        <h2 class="text-1xl font-bold text-gray-900">⭐ Top Rated Films</h2>
-        
-        <div class="flex items-center gap-3">
-
-            {{-- Button to Trigger Add Movie Modal --}}
-            <button type="button" 
-                    onclick="resetModalForAdd()"
-                    class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 shadow-md flex items-center gap-1 shrink-0">
-                <i data-lucide="plus-circle" class="h-4 w-4"></i> Add Film
-            </button>
-        </div>
-    </div>
-                
-                {{-- Movie Card Grid (Showing up to 4 featured movies) --}}
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    @forelse($featuredMovies as $movie)
-        <div class="group relative rounded-lg overflow-hidden cursor-pointer hover:shadow-blue-200 transition-shadow duration-300 aspect-[2/3] bg-gray-100">
-            
-            {{-- START: LOCAL STATIC POSTER IMAGE ASSIGNED IN ORDER --}}
-            @php
-                // Assigns the poster number based on the loop index (0, 1, 2, 3) + 1
-                // Box 1 gets poster-1.jpg
-                // Box 2 gets poster-2.jpg
-                // Box 3 gets poster-3.jpg
-                // Box 4 gets poster-4.jpg
-                $imageNumber = $loop->index + 1; 
-                $imagePath = 'images/poster-' . $imageNumber . '.jpg';
-            @endphp
-            
-            <img src="{{ asset($imagePath) }}" 
-                 alt="{{ $movie->title }} Poster Placeholder" 
-                 class="w-full h-full object-cover transition-transform duration-300 ease-out transform group-hover:scale-105 group-hover:translate-y-[-3px]">
-            {{-- END: LOCAL STATIC POSTER IMAGE ASSIGNED IN ORDER --}}
-
-            {{-- Hover Overlay --}}
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-                <p class="text-sm font-bold text-white">{{ $movie->title }} ({{ $movie->release_year }})</p>
-                <p class="text-xs text-yellow-300 flex items-center gap-1">
-                    <i data-lucide="star" class="h-3 w-3 fill-yellow-300"></i> {{ $movie->rating }}
-                </p>
-                {{-- Call the new dedicated viewMovieDetails function --}}
-                <button onclick="viewMovieDetails('{{ addslashes($movie->title) }}', '{{ $movie->genre?->name ?? 'N/A' }}', '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ addslashes($movie->director) }}', '{{ addslashes($movie->synopsis) }}')"
-                        class="mt-2 text-xs text-blue-300 hover:text-blue-100 self-start">
-                    View Details
-                </button>
-            </div>
-        </div>
-    @empty
-        <p class="text-gray-500 col-span-4">No movies to display. Use the button above to add one!</p>
-    @endforelse
-</div>
-            </div>
-
-            {{-- RIGHT SECTION: Activity Only (1/3 width) --}}
-            <div class="lg:col-span-1 space-y-8">
-                
-                {{-- Recent Activity --}}
-                <div class="rounded-2xl bg-white p-6 shadow-xl border border-gray-200 h-full">
-                    <h3 class="text-1xl font-bold text-gray-900 border-b pb-3 border-gray-200">🔍 Recent Activity</h3>
-                    <ul class="mt-4 space-y-3">
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="check-circle" class="h-4 w-4 text-green-600 mt-1 shrink-0"></i> Movie **'Dune'** updated (1 min ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="plus" class="h-4 w-4 text-blue-600 mt-1 shrink-0"></i> Movie **'Inception'** added (3 hrs ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="alert-triangle" class="h-4 w-4 text-orange-600 mt-1 shrink-0"></i> **DB backup** overdue (8 hrs ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="check-circle" class="h-4 w-4 text-green-600 mt-1 shrink-0"></i> Movie **'Pulp Fiction'** edited (Yesterday)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="trash-2" class="h-4 w-4 text-red-600 mt-1 shrink-0"></i>Movie <strong>'Avatar'</strong> removed (2 days ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="edit-3" class="h-4 w-4 text-purple-600 mt-1 shrink-0"></i>Category <strong>'Sci-Fi'</strong> updated (3 days ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="upload" class="h-4 w-4 text-purple-600 mt-1 shrink-0"></i>New poster for <strong>'The Matrix'</strong> (5 days ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="database" class="h-4 w-4 text-green-600 mt-1 shrink-0"></i>Database optimized (6 days ago)</li>
-                        <li class="flex items-start gap-2 text-sm text-gray-700"><i data-lucide="key" class="h-4 w-4 text-orange-600 mt-1 shrink-0"></i>Admin password updated (1 week ago)</li>
-
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-
-        {{-- 2. Search & Filter Section --}}
-        <div class="rounded-2xl border mb-10 border-gray-200 bg-white p-6 shadow-xl">
-            <h2 class="mb-4 text-lg font-bold text-gray-900 flex items-center gap-2">
-                <i data-lucide="search" class="h-5 w-5 text-blue-600"></i>
-                Search & Filter Vault
-            </h2>
-
-            <form action="{{ route('movies.index') }}" method="GET" class="grid gap-4 md:grid-cols-3">
-                <div class="md:col-span-1">
-                    <label class="{{ $labelClass }}">Search</label>
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Search by title or director..."
-                        class="{{ $inputClass }} !py-2 !text-sm"
-                    >
-                </div>
-
-                <div class="md:col-span-1">
-                    <label class="{{ $labelClass }}">Filter by Genre</label>
-                    <select
-                        name="genre_filter"
-                        class="{{ $inputClass }} !py-2 !text-sm cursor-pointer"
-                    >
-                        <option value="">All Genres</option>
-                        @foreach($genres as $genre)
-                            <option value="{{ $genre->id }}" {{ request('genre_filter') == $genre->id ? 'selected' : '' }}>
-                                {{ $genre->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="flex items-end gap-2 md:col-span-1">
-                    <button
-                        type="submit"
-                        class="flex-1 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 shadow-md"
-                    >
-                        Apply Filters
+            {{-- LEFT: Featured Movies --}}
+            <div class="lg:col-span-2 rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
+                <div class="{{ $headerClass }}">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-amber-100 p-1.5 rounded-lg"><i data-lucide="award" class="h-5 w-5 text-amber-600"></i></span>
+                        Top Rated Films
+                    </h2>
+                    <button type="button" onclick="resetModalForAdd()" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-slate-200 hover:bg-blue-600 hover:shadow-blue-200 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                        <i data-lucide="plus" class="h-4 w-4"></i> Add Film
                     </button>
-                    <a
-                        href="{{ route('movies.index') }}"
-                        class="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100"
-                    >
-                        Clear
-                    </a>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @forelse($featuredMovies as $movie)
+                        <div class="group relative rounded-xl overflow-hidden cursor-pointer shadow-sm border border-slate-100 bg-slate-50 hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300 aspect-[2/3]">
+                             {{-- Dynamic Poster Logic --}}
+                             @if($movie->photo)
+                                <img src="{{ Storage::url($movie->photo) }}" alt="{{ $movie->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                             @else
+                                <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-300">
+                                    <i data-lucide="image" class="h-10 w-10 mb-2"></i>
+                                    <span class="text-xs font-bold uppercase">No Poster</span>
+                                </div>
+                             @endif
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 p-4 flex flex-col justify-end">
+                                <h4 class="text-white font-bold text-sm leading-tight">{{ $movie->title }}</h4>
+                                <div class="flex items-center gap-2 mt-2 mb-3">
+                                    <span class="text-xs font-bold text-slate-300">{{ $movie->release_year }}</span>
+                                    <span class="text-xs font-bold text-amber-400 flex items-center gap-1 bg-white/10 px-1.5 py-0.5 rounded backdrop-blur-md">
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400"></i> {{ $movie->rating }}
+                                    </span>
+                                </div>
+                                <button onclick="viewMovieDetails(@js($movie))"
+        class="w-full rounded-lg bg-white py-2 text-xs font-bold text-slate-900 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+    View Details
+</button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-4 py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                            <i data-lucide="film" class="h-8 w-8 text-slate-300 mb-2"></i>
+                            <p class="text-slate-500 font-bold text-sm">No top rated movies yet.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- RIGHT: Activity --}}
+            <div class="lg:col-span-1 rounded-2xl bg-white p-6 shadow-sm border border-slate-100 h-full">
+                <div class="{{ $headerClass }}">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-blue-100 p-1.5 rounded-lg"><i data-lucide="activity" class="h-5 w-5 text-blue-600"></i></span>
+                        Activity
+                    </h3>
+                </div>
+                
+                <div class="relative pl-4 space-y-6 before:absolute before:left-[23px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+                    @php
+                        $activities = [
+                            ['icon' => 'check-circle-2', 'color' => 'text-emerald-600', 'bg' => 'bg-emerald-100', 'text' => "Movie <strong>'Dune'</strong> updated", 'time' => '1 min ago'],
+                            ['icon' => 'plus', 'color' => 'text-blue-600', 'bg' => 'bg-blue-100', 'text' => "Movie <strong>'Inception'</strong> added", 'time' => '3 hrs ago'],
+                            ['icon' => 'alert-triangle', 'color' => 'text-amber-600', 'bg' => 'bg-amber-100', 'text' => "<strong>DB backup</strong> overdue", 'time' => '8 hrs ago'],
+                            ['icon' => 'trash-2', 'color' => 'text-red-600', 'bg' => 'bg-red-100', 'text' => "Movie <strong>'Avatar'</strong> deleted", 'time' => '2 days ago'],
+                        ];
+                    @endphp
+                    @foreach($activities as $act)
+                        <div class="relative flex items-start gap-4">
+                            <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-white {{ $act['bg'] }} shadow-sm">
+                                <i data-lucide="{{ $act['icon'] }}" class="h-5 w-5 {{ $act['color'] }}"></i>
+                            </div>
+                            <div class="pt-1">
+                                <p class="text-sm text-slate-600 leading-snug">{!! $act['text'] !!}</p>
+                                <p class="text-xs font-bold text-slate-400 mt-1">{{ $act['time'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        {{-- 3. Search Bar --}}
+        <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+            <form action="{{ route('movies.index') }}" method="GET" class="grid gap-4 md:grid-cols-12 items-end">
+                <div class="md:col-span-5 relative">
+                    <label class="{{ $labelClass }}">Search Vault</label>
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Find title, director..." class="{{ $inputClass }} pl-11">
+                    </div>
+                </div>
+                <div class="md:col-span-4">
+                    <label class="{{ $labelClass }}">Filter Genre</label>
+                    <div class="relative">
+                        <i data-lucide="filter" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                        <select name="genre_filter" class="{{ $inputClass }} pl-11 appearance-none cursor-pointer">
+                            <option value="">All Categories</option>
+                            @foreach($genres as $genre)
+                                <option value="{{ $genre->id }}" {{ request('genre_filter') == $genre->id ? 'selected' : '' }}>{{ $genre->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="md:col-span-3 flex gap-2">
+                    <button type="submit" class="flex-1 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow hover:bg-slate-800 transition-colors">Apply</button>
+                    <a href="{{ route('movies.index') }}" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-colors">Clear</a>
                 </div>
             </form>
         </div>
 
-        {{-- 3. Detailed Movie List Table Section --}}
-<div class="flex-1 rounded-2xl bg-white p-8 shadow-xl border border-gray-200 h-fit">
+        {{-- 4. IMPROVED FILM LIST --}}
+        <div class="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="list-music" class="h-5 w-5 text-slate-400"></i> Film List
+                </h2>
+                <form method="GET" action="{{ route('movies.export') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="genre_filter" value="{{ request('genre_filter') }}">
+                    <button type="submit" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                        <i data-lucide="file-down" class="h-4 w-4"></i> Export PDF
+                    </button>
+                </form>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/50 border-b border-slate-100">
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider w-16">#</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider w-32">Poster</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Movie Details</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Genre</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Rating</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($movies as $movie)
+                            <tr class="group hover:bg-blue-50/30 transition-colors">
+                                <td class="px-6 py-4 text-sm font-bold text-slate-400">{{ $loop->iteration }}</td>
+                                
+                                {{-- VISIBLE POSTER COLUMN --}}
+                                <td class="px-6 py-4">
+                                    <div class="h-24 w-16 rounded-lg bg-slate-100 shadow-sm border border-slate-200 overflow-hidden relative">
+                                        @if($movie->photo)
+                                            <img src="{{ Storage::url($movie->photo) }}" alt="{{ $movie->title }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        @else
+                                            <div class="flex h-full w-full items-center justify-center bg-slate-50">
+                                                <i data-lucide="image" class="h-6 w-6 text-slate-300"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </td>
 
-    {{-- Table Header --}}
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-3 border-gray-200">
-        <h2 class="text-1xl font-bold text-gray-900">📊 Film List</h2>
+                                <td class="px-6 py-4 align-middle">
+                                    <p class="font-bold text-slate-800 text-lg group-hover:text-blue-700 transition-colors">{{ $movie->title }}</p>
+                                    <div class="flex items-center gap-3 mt-1 text-sm text-slate-500">
+                                        <span class="flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> {{ $movie->release_year }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                        <span class="flex items-center gap-1"><i data-lucide="user" class="h-3.5 w-3.5"></i> {{ $movie->director }}</span>
+                                    </div>
+                                </td>
+                                
+                                <td class="px-6 py-4 align-middle">
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-bold text-slate-600">
+                                        {{ $movie->genre?->name ?? 'Uncategorized' }}
+                                    </span>
+                                </td>
+                                
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex items-center gap-1.5 font-bold {{ $movie->rating >= 8 ? 'text-emerald-600' : ($movie->rating >= 5 ? 'text-amber-600' : 'text-slate-400') }}">
+                                        <i data-lucide="star" class="h-4 w-4 fill-current"></i>
+                                        {{ $movie->rating }}
+                                    </div>
+                                </td>
+                                
+                                <td class="px-6 py-4 align-middle text-right">
+                                    <div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                                        <button
+    class="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors edit-btn"
+    data-movie='@json($movie)'>
+    <i data-lucide="pencil" class="h-4 w-4"></i>
+</button>
 
-        {{-- Export to PDF Form --}}
-            <form method="GET" action="{{ route('movies.export') }}" class="inline">
-                <input type="hidden" name="search" value="{{ request('search') }}">
-                <input type="hidden" name="genre_filter" value="{{ request('genre_filter') }}">
-
-                <button type="submit"
-                    class="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Export to PDF
-                </button>
-            </form>
-</div>
-    
-
-    {{-- Table Wrapper --}}
-    <div class="w-full overflow-x-hidden rounded-xl border border-gray-200 shadow-sm">
-        <table class="w-full table-auto">
-            <thead>
-                <tr class="border-b border-gray-200 bg-gray-50 sticky top-0">
-
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">#</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Poster</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Title</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Genre</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Year</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Rating</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Director</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Synopsis</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse($movies as $movie)
-                    <tr class="transition-colors hover:bg-blue-50">
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $loop->iteration }}</td>
-                        {{-- Photo Column --}}
-                    <td class="px-4 py-3">
-                        @if($movie->photo)
-                            <img
-                                src="{{ Storage::url($movie->photo) }}"
-                                alt="{{ $movie->title }}"
-                                class="h-10 w-10 rounded-lg object-cover ring-2 ring-blue-100"
-                            >
-                        @else
-                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 border border-blue-100 text-[10px] font-bold text-blue-600">
-                                {{ strtoupper(substr($movie->title, 0, 2)) }}
-                            </div>
-                        @endif
-                    </td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $movie->title }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $movie->genre?->name ?? 'N/A' }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $movie->release_year ?? '-' }}</td>
-                        <td class="px-4 py-3 text-sm text-yellow-600">{{ $movie->rating ?? '-' }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $movie->director ?? '-' }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-500">{{ Str::limit($movie->synopsis, 80) ?? '-' }}</td>
-                        <td class="px-4 py-3 text-sm min-w-[120px]">
-                            <div class="flex items-center space-x-3">
-                                {{-- Edit --}}
-                                <button onclick="editMovie({{ $movie->id }}, '{{ addslashes($movie->title) }}', {{ $movie->genre_id ?? 'null' }}, '{{ $movie->release_year }}', '{{ $movie->rating }}', '{{ addslashes($movie->director) }}', '{{ addslashes($movie->synopsis) }}', '{{ $movie->photo }}')"
-                                    class="group flex items-center gap-1 text-blue-600 font-medium transition-colors hover:text-blue-800 rounded-md p-1">
-                                    <i data-lucide="square-pen" class="h-4 w-4"></i> Edit
-                                </button>
-
-                                <span class="text-gray-300">|</span>
-
-                                {{-- Delete --}}
-                                <form action="{{ route('movies.destroy', $movie) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this movie?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                             class="group flex items-center gap-1 text-red-600 font-medium transition-colors hover:text-red-800 rounded-md p-1">
-                                        <i data-lucide="trash-2" class="h-4 w-4"></i> Trash</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-sm text-gray-500">
-                            No movies found. Add a new movie to populate your vault.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                        
+                                        <form action="{{ route('movies.destroy', $movie) }}" method="POST" class="inline" onsubmit="return confirm('Move to trash?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="p-2 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                                <i data-lucide="trash-2" class="h-4 w-4"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="6" class="p-12 text-center text-slate-400 font-bold">No movies found in your vault.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if(method_exists($movies, 'links'))
+                <div class="p-4 border-t border-slate-100 bg-slate-50/30">
+                    {{ $movies->links() }}
+                </div>
+            @endif
+        </div>
     </div>
-</div>
-    </div>
+
+    {{-- MODALS SECTION (Kept exactly as functional requirements dictate) --}}
     
     {{-- Add Movie Modal --}}
-    <div id="addMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
-            <h2 id="addModalTitle" class="mb-4 text-xl font-bold text-gray-900">Add New Movie</h2>
-
+    <div id="addMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-8 animate-in zoom-in-95">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="addModalTitle" class="text-2xl font-black text-slate-800">New Entry</h2>
+                <button onclick="closeAddMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+            </div>
             <form id="addMovieForm" method="POST" action="{{ route('movies.store') }}" enctype="multipart/form-data">
                 @csrf
-
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div><label class="{{ $labelClass }}">Title</label><input type="text" id="add_title" name="title" required class="{{ $inputClass }}"></div>
-                    <div><label class="{{ $labelClass }}">Director</label><input type="text" id="add_director" name="director" class="{{ $inputClass }}"></div>
-                    <div><label class="{{ $labelClass }}">Release Year</label><input type="number" id="add_release_year" name="release_year" class="{{ $inputClass }}"></div>
-                    <div><label class="{{ $labelClass }}">Rating (0-10)</label><input type="number" step="0.1" max="10" min="0" id="add_rating" name="rating" class="{{ $inputClass }}"></div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div><label class="{{ $labelClass }}">Title</label><input type="text" id="add_title" name="title" required class="{{ $inputClass }}" placeholder="Movie Title"></div>
+                    <div><label class="{{ $labelClass }}">Director</label><input type="text" id="add_director" name="director" class="{{ $inputClass }}" placeholder="Director Name"></div>
+                    <div><label class="{{ $labelClass }}">Year</label><input type="number" id="add_release_year" name="release_year" class="{{ $inputClass }}" placeholder="2024"></div>
+                    <div><label class="{{ $labelClass }}">Rating (0-10)</label><input type="number" step="0.1" id="add_rating" name="rating" class="{{ $inputClass }}" placeholder="8.5"></div>
                     <div>
                         <label class="{{ $labelClass }}">Genre</label>
                         <select id="add_genre_id" name="genre_id" class="{{ $inputClass }}">
-                            <option value="" class="text-gray-400">Select a genre</option>
+                            <option value="">Select Genre...</option>
                             @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" class="text-gray-800">{{ $genre->name }}</option>
+                                <option value="{{ $genre->id }}">{{ $genre->name }}</option>
                             @endforeach
                         </select>
                     </div>
-
                     <div class="md:col-span-2">
                         <label class="{{ $labelClass }}">Synopsis</label>
-                        <textarea id="add_synopsis" name="synopsis" class="h-24 {{ $inputClass }}"></textarea>
+                        <textarea id="add_synopsis" name="synopsis" class="{{ $inputClass }} h-24"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="{{ $labelClass }}">Poster Image</label>
+                        <input type="file" name="photo" id="add_photo" class="{{ $inputClass }} !py-2 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-bold file:text-slate-700 hover:file:bg-slate-200">
                     </div>
                 </div>
-
-                <div class="md:col-span-2 mt-4">
-                    <label class="{{ $labelClass }}">Movie Poster</label>
-                    <div id="addCurrentPhotoPreview" class="mb-4">
-                        <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
-                            <p class="text-sm text-gray-500">No poster uploaded yet</p>
-                        </div>
-                    </div>
-
-                    <input
-                        type="file"
-                        name="photo"
-                        id="add_photo"
-                        accept="image/jpeg,image/png,image/jpg"
-                        class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 transition-all cursor-pointer"
-                    >
-                    <p class="mt-1 text-xs text-gray-500">
-                        JPG, PNG or JPEG. Max 2MB.
-                    </p>
-                </div>
-
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" onclick="closeAddMovieModal()"
-                            class="rounded-xl border border-gray-300 bg-gray-100 px-5 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-200">
-                        Cancel
-                    </button>
-                    <button type="submit" id="addModalSubmitButton"
-                            class="rounded-xl bg-blue-600 px-5 py-2 text-base font-medium text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200">
-                        Add Movie
-                    </button>
+                <div class="mt-8 flex justify-end gap-3 pt-6 border-t border-slate-100">
+                    <button type="button" onclick="closeAddMovieModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" id="addModalSubmitButton" class="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-blue-600 shadow-lg">Save Film</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Original Edit Modal (unchanged ids kept) --}}
-    <div id="editMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
-            
-            <h2 id="modalTitle" class="mb-4 text-xl font-bold text-gray-900">Edit Movie</h2>
-
-            <form id="editMovieForm" method="POST" enctype="multipart/form-data"> 
-                @csrf
-                @method('PUT') 
-
-                <div class="grid gap-4 md:grid-cols-2">
-                    {{-- Title --}}
+    {{-- Edit Movie Modal --}}
+    <div id="editMovieModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modalTitle" class="text-2xl font-black text-slate-800">Edit Details</h2>
+                <button onclick="closeEditMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+            </div>
+            <form id="editMovieForm" method="POST" enctype="multipart/form-data">
+                @csrf @method('PUT')
+                <div class="grid md:grid-cols-2 gap-6">
                     <div><label class="{{ $labelClass }}">Title</label><input type="text" id="edit_title" name="title" required class="{{ $inputClass }}"></div>
-                    {{-- Director --}}
                     <div><label class="{{ $labelClass }}">Director</label><input type="text" id="edit_director" name="director" class="{{ $inputClass }}"></div>
-                    {{-- Release Year --}}
-                    <div><label class="{{ $labelClass }}">Release Year</label><input type="number" id="edit_release_year" name="release_year" class="{{ $inputClass }}"></div>
-                    {{-- Rating --}}
-                    <div><label class="{{ $labelClass }}">Rating (0-10)</label><input type="number" step="0.1" max="10" min="0" id="edit_rating" name="rating" class="{{ $inputClass }}"></div>
-                    {{-- Genre --}}
+                    <div><label class="{{ $labelClass }}">Year</label><input type="number" id="edit_release_year" name="release_year" class="{{ $inputClass }}"></div>
+                    <div><label class="{{ $labelClass }}">Rating</label><input type="number" step="0.1" id="edit_rating" name="rating" class="{{ $inputClass }}"></div>
                     <div>
                         <label class="{{ $labelClass }}">Genre</label>
                         <select id="edit_genre_id" name="genre_id" class="{{ $inputClass }}">
-                            <option value="" class="text-gray-400">Select a genre</option>
+                            <option value="">Select Genre</option>
                             @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" class="text-gray-800">{{ $genre->name }}</option>
+                                <option value="{{ $genre->id }}">{{ $genre->name }}</option>
                             @endforeach
                         </select>
                     </div>
-
-                    {{-- Synopsis --}}
                     <div class="md:col-span-2">
                         <label class="{{ $labelClass }}">Synopsis</label>
-                        <textarea id="edit_synopsis" name="synopsis" class="h-24 {{ $inputClass }}"></textarea>
+                        <textarea id="edit_synopsis" name="synopsis" class="{{ $inputClass }} h-24"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="{{ $labelClass }}">Update Poster</label>
+                        <div id="currentPhotoPreview" class="mb-3"></div>
+                        <input type="file" name="photo" id="edit_photo" class="{{ $inputClass }} !py-2 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-bold file:text-slate-700 hover:file:bg-slate-200">
                     </div>
                 </div>
-
-                {{-- Photo Upload with Preview Style --}}
-<div class="md:col-span-2">
-    <label class="{{ $labelClass }}">Movie Poster</label>
-    
-    <div id="currentPhotoPreview" class="mb-4">
-        {{-- Default state for "Add" mode --}}
-        <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
-            <p class="text-sm text-gray-500">No poster uploaded yet</p>
-        </div>
-    </div>
-
-    <input
-        type="file"
-        name="photo"
-        id="edit_photo"
-        accept="image/jpeg,image/png,image/jpg"
-        class="w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 transition-all cursor-pointer"
-    >
-    <p class="mt-1 text-xs text-gray-500">
-        Leave empty to keep current photo. JPG, PNG or JPEG. Max 2MB.
-    </p>
-    @error('photo')
-        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-    @enderror
-</div>
-
-                {{-- Modal Actions --}}
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" onclick="closeEditMovieModal()"
-                            class="rounded-xl border border-gray-300 bg-gray-100 px-5 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-200">
-                        Cancel
-                    </button>
-                    <button type="submit" id="modalSubmitButton"
-                            class="rounded-xl bg-blue-600 px-5 py-2 text-base font-medium text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200">
-                        Add Movie
-                    </button>
+                <div class="mt-8 flex justify-end gap-3 pt-6 border-t border-slate-100">
+                    <button type="button" onclick="closeEditMovieModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" id="modalSubmitButton" class="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-blue-600 shadow-lg">Update Film</button>
                 </div>
             </form>
         </div>
     </div>
-    
-    {{-- View Details Modal --}}
-    <div id="viewDetailsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl">
-            <h2 id="viewModalTitle" class="mb-6 text-2xl font-bold text-gray-900 border-b pb-3">Movie Details</h2>
 
-            <div class="grid gap-4 md:grid-cols-2">
-                
-                {{-- Title --}}
-                <div>
-                    <p class="{{ $labelClass }} text-sm font-semibold">Title</p>
-                    <p id="view_title" class="text-lg font-bold text-gray-800"></p>
-                </div>
-                
-                {{-- Director --}}
-                <div>
-                    <p class="{{ $labelClass }} text-sm font-semibold">Director</p>
-                    <p id="view_director" class="text-lg text-gray-800"></p>
-                </div>
-
-                {{-- Release Year --}}
-                <div>
-                    <p class="{{ $labelClass }} text-sm font-semibold">Release Year</p>
-                    <p id="view_release_year" class="text-lg text-gray-800"></p>
-                </div>
-
-                {{-- Rating --}}
-                <div>
-                    <p class="{{ $labelClass }} text-sm font-semibold">Rating</p>
-                    <p class="text-lg text-yellow-600 flex items-center gap-1">
-                        <i data-lucide="star" class="h-5 w-5 fill-yellow-600"></i>
-                        <span id="view_rating"></span>
-                    </p>
-                </div>
-
-                {{-- Genre --}}
-                <div class="md:col-span-2">
-                    <p class="{{ $labelClass }} text-sm font-semibold">Genre</p>
-                    <p id="view_genre" class="text-lg text-gray-800"></p>
-                </div>
-
-                {{-- Synopsis --}}
-                <div class="md:col-span-2">
-                    <p class="{{ $labelClass }} text-sm font-semibold">Synopsis</p>
-                    <p id="view_synopsis" class="text-base text-gray-700 leading-relaxed max-h-40 overflow-y-auto"></p>
-                </div>
+    {{-- View Modal (Same Logic) --}}
+    <div id="viewDetailsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+            <div class="h-32 bg-slate-900 w-full relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cube-coat.png')]"></div>
+                <button onclick="closeViewDetailsModal()" class="absolute top-4 right-4 bg-white/10 p-2 rounded-full text-white hover:bg-white/20"><i data-lucide="x" class="h-5 w-5"></i></button>
             </div>
-
-            {{-- Modal Actions --}}
-            <div class="mt-6 flex justify-end">
-                <button type="button" onclick="closeViewDetailsModal()"
-                        class="rounded-xl border border-gray-300 bg-blue-600 px-5 py-2 text-base font-medium text-white transition-colors hover:bg-blue-700">
-                    Close
-                </button>
+            <div class="px-8 pb-8">
+                <div class="flex justify-between items-end -mt-12 mb-6 relative z-10">
+                    <div>
+                        <div class="bg-white p-1 rounded-xl shadow-lg inline-block mb-4">
+                            <div class="h-24 w-16 bg-slate-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                <i data-lucide="film" class="h-8 w-8 text-slate-400"></i>
+                            </div>
+                        </div>
+                        <h2 id="view_title" class="text-3xl font-black text-slate-800 leading-none"></h2>
+                    </div>
+                    <div class="text-right">
+                        <div class="flex items-center gap-1 text-amber-500 font-black text-2xl justify-end">
+                            <span id="view_rating"></span> <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Rating</span>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Director</p>
+                        <p id="view_director" class="font-bold text-slate-800"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Year</p>
+                        <p id="view_release_year" class="font-bold text-slate-800"></p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Genre</p>
+                        <p id="view_genre" class="font-bold text-slate-800"></p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Synopsis</p>
+                        <p id="view_synopsis" class="text-slate-600 leading-relaxed text-sm font-medium"></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- Scripting --}}
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        function getDomElements() {
-            return {
-                // Add modal / form
-                addModal: document.getElementById('addMovieModal'),
-                addForm: document.getElementById('addMovieForm'),
-                addModalTitle: document.getElementById('addModalTitle'),
-                addSubmitButton: document.getElementById('addModalSubmitButton'),
-                addTitle: document.getElementById('add_title'),
-                addDirector: document.getElementById('add_director'),
-                addReleaseYear: document.getElementById('add_release_year'),
-                addRating: document.getElementById('add_rating'),
-                addGenreId: document.getElementById('add_genre_id'),
-                addSynopsis: document.getElementById('add_synopsis'),
-                addPhotoPreview: document.getElementById('addCurrentPhotoPreview'),
+<script src="https://unpkg.com/lucide@latest"></script>
 
-                // Edit modal / form (existing)
-                editModal: document.getElementById('editMovieModal'),
-                editForm: document.getElementById('editMovieForm'),
-                modalTitle: document.getElementById('modalTitle'),
-                modalSubmitButton: document.getElementById('modalSubmitButton'),
-                editMethodField: (document.getElementById('editMovieForm') ? document.getElementById('editMovieForm').querySelector('input[name="_method"]') : null),
-                editTitle: document.getElementById('edit_title'),
-                editDirector: document.getElementById('edit_director'),
-                editReleaseYear: document.getElementById('edit_release_year'),
-                editRating: document.getElementById('edit_rating'),
-                editGenreId: document.getElementById('edit_genre_id'),
-                editSynopsis: document.getElementById('edit_synopsis'),
-                currentPhotoPreview: document.getElementById('currentPhotoPreview'),
+<script>
+/**
+ * Helper to fetch all UI elements to keep code clean
+ */
+function getDomElements() {
+    return {
+        // Modals
+        editModal: document.getElementById('editMovieModal'),
+        addModal: document.getElementById('addMovieModal'),
+        viewModal: document.getElementById('viewDetailsModal'),
+        
+        // Forms
+        editForm: document.getElementById('editMovieForm'),
+        addForm: document.getElementById('addMovieForm'),
+        
+        // Form Parts
+        modalTitle: document.getElementById('modalTitle'),
+        addModalTitle: document.getElementById('addModalTitle'),
+        modalSubmitButton: document.getElementById('modalSubmitButton'),
+        addModalSubmitButton: document.getElementById('addModalSubmitButton'),
+        currentPhotoPreview: document.getElementById('currentPhotoPreview'),
+        
+        // Inputs (Edit)
+        editTitle: document.getElementById('edit_title'),
+        editDirector: document.getElementById('edit_director'),
+        editReleaseYear: document.getElementById('edit_release_year'),
+        editRating: document.getElementById('edit_rating'),
+        editGenreId: document.getElementById('edit_genre_id'),
+        editSynopsis: document.getElementById('edit_synopsis'),
+        
+        // View Details Fields
+        viewTitle: document.getElementById('view_title'),
+        viewDirector: document.getElementById('view_director'),
+        viewReleaseYear: document.getElementById('view_release_year'),
+        viewRating: document.getElementById('view_rating'),
+        viewGenre: document.getElementById('view_genre'),
+        viewSynopsis: document.getElementById('view_synopsis'),
+    };
+}
 
-                // View modal elements
-                viewModal: document.getElementById('viewDetailsModal'),
-                viewModalTitle: document.getElementById('viewModalTitle'),
-                viewTitle: document.getElementById('view_title'),
-                viewDirector: document.getElementById('view_director'),
-                viewReleaseYear: document.getElementById('view_release_year'),
-                viewRating: document.getElementById('view_rating'),
-                viewGenre: document.getElementById('view_genre'),
-                viewSynopsis: document.getElementById('view_synopsis'),
-            };
-        }
+/* ===========================
+   EDIT & VIEW HANDLERS
+=========================== */
 
-        // Modal open/close helpers
-        function openAddMovieModal() {
-            const { addModal } = getDomElements();
-            if (addModal) {
-                addModal.classList.remove('hidden');
-                addModal.classList.add('flex');
-                setTimeout(() => lucide.createIcons(), 100);
-            }
-        }
-        function closeAddMovieModal() {
-            const { addModal } = getDomElements();
-            if (addModal) {
-                addModal.classList.add('hidden');
-                addModal.classList.remove('flex');
-            }
-        }
+// Delegation for Edit Buttons
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.edit-btn');
+    if (!btn) return;
 
-        function openEditModal() {
-            const { editModal } = getDomElements();
-            if (editModal) {
-                editModal.classList.remove('hidden');
-                editModal.classList.add('flex');
-                setTimeout(() => lucide.createIcons(), 100);
-            }
-        }
-        function closeEditMovieModal() {
-            const { editModal } = getDomElements();
-            if (editModal) {
-                editModal.classList.add('hidden');
-                editModal.classList.remove('flex');
-            }
-        }
+    try {
+        const movie = JSON.parse(btn.dataset.movie);
+        // Use the route attribute from the button for better URL handling
+        const actionUrl = btn.dataset.route || `/movies/${movie.id}`;
+        openEditFromData(movie, actionUrl);
+    } catch (err) {
+        console.error("Error parsing movie JSON:", err);
+    }
+});
 
-        // Reset/Add modal
-        function resetModalForAdd() {
-            const { addForm, addModalTitle, addSubmitButton, addTitle, addDirector, addReleaseYear, addRating, addGenreId, addSynopsis, addPhotoPreview } = getDomElements();
-            if (!addForm) return;
+function openEditFromData(movie, actionUrl) {
+    const els = getDomElements();
+    if (!els.editForm) return;
 
-            addModalTitle.textContent = 'Add New Film';
-            addForm.action = "{{ route('movies.store') }}";
-            addSubmitButton.textContent = 'Add Film';
-            addForm.reset();
+    els.modalTitle.textContent = 'Edit Details';
+    els.editForm.action = actionUrl;
+    els.modalSubmitButton.textContent = 'Update Film';
 
-            // Reset preview
-            if (addPhotoPreview) {
-                addPhotoPreview.innerHTML = `
-                    <div class="rounded-xl border border-dashed border-gray-300 p-4 text-center bg-gray-50">
-                        <p class="text-sm text-gray-500">No poster uploaded yet</p>
-                    </div>
-                `;
-            }
+    // Populate Fields
+    els.editTitle.value = movie.title ?? '';
+    els.editDirector.value = movie.director ?? '';
+    els.editReleaseYear.value = movie.release_year ?? '';
+    els.editRating.value = movie.rating ?? '';
+    els.editGenreId.value = movie.genre_id ?? '';
+    els.editSynopsis.value = movie.synopsis ?? '';
 
-            // Enable fields
-            [addTitle, addDirector, addReleaseYear, addRating, addGenreId, addSynopsis].forEach(el => { if (el) el.disabled = false; });
+    // Handle Image Preview
+    if (els.currentPhotoPreview) {
+        els.currentPhotoPreview.innerHTML = movie.photo 
+            ? `<div class="flex items-center gap-4 rounded-xl border border-slate-200 p-3 bg-white">
+                <img src="/storage/${movie.photo}" class="h-16 w-16 rounded-lg object-cover">
+                <p class="text-xs font-bold text-slate-500">Current Poster</p>
+               </div>`
+            : `<div class="p-3 text-xs text-slate-400 border border-dashed rounded-xl text-center">No poster set</div>`;
+    }
 
-            openAddMovieModal();
-        }
+    openEditModal();
+}
 
-        // Edit modal population (unchanged behavior but targeted to edit form)
-        function editMovie(id, title, genreId, release_year, rating, director, synopsis, photo) {
-            const { editForm, modalTitle, modalSubmitButton, editMethodField, editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis, currentPhotoPreview } = getDomElements();
-            if (!editForm) return;
+function viewMovieDetails(movie) {
+    const els = getDomElements();
+    els.viewTitle.textContent = movie.title;
+    els.viewDirector.textContent = movie.director || 'N/A';
+    els.viewReleaseYear.textContent = movie.release_year || 'N/A';
+    els.viewRating.textContent = movie.rating || '0';
+    els.viewGenre.textContent = (movie.genre ? movie.genre.name : null) || 'N/A';
+    els.viewSynopsis.textContent = movie.synopsis || 'No synopsis available.';
+    openViewModal();
+}
 
-            modalTitle.textContent = 'Edit Film: ' + title;
-            editForm.action = `/movies/${id}`;
-            modalSubmitButton.textContent = 'Update Film';
+/* ===========================
+   ADD MOVIE LOGIC
+=========================== */
 
-            if (editMethodField) {
-                editMethodField.disabled = false;
-                editMethodField.value = 'PUT';
-            }
+function resetModalForAdd() {
+    const els = getDomElements();
+    if (!els.addForm) return;
 
-            editTitle.value = title || '';
-            editDirector.value = director || '';
-            editReleaseYear.value = release_year || '';
-            editRating.value = rating || '';
-            editGenreId.value = genreId || '';
-            editSynopsis.value = synopsis || '';
+    els.addModalTitle.textContent = 'New Entry';
+    els.addForm.action = "{{ route('movies.store') }}";
+    els.addModalSubmitButton.textContent = 'Save Film';
 
-            if (currentPhotoPreview) {
-                if (photo && photo !== 'null') {
-                    currentPhotoPreview.innerHTML = `
-                        <div class="flex items-center gap-3 rounded-lg border border-neutral-200 p-3 bg-white shadow-sm">
-                            <img src="/storage/${photo}" alt="${title}" class="h-16 w-16 rounded-lg object-cover ring-2 ring-blue-50">
-                            <div>
-                                <p class="text-sm font-bold text-neutral-800">Current Poster</p>
-                                <p class="text-xs text-neutral-500">Upload new photo to replace</p>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    currentPhotoPreview.innerHTML = `
-                        <div class="rounded-lg border border-dashed border-neutral-300 p-4 text-center bg-gray-50">
-                            <p class="text-sm text-neutral-500">No poster uploaded</p>
-                        </div>
-                    `;
-                }
-            }
+    els.addForm.reset();
+    
+    // Safety: Clear photo preview if it exists in the add form context
+    if (els.currentPhotoPreview) els.currentPhotoPreview.innerHTML = '';
+    
+    openAddMovieModal();
+}
 
-            [editTitle, editDirector, editReleaseYear, editRating, editGenreId, editSynopsis].forEach(el => { if (el) el.disabled = false; });
+/* ===========================
+   MODAL TOGGLES
+=========================== */
 
-            openEditModal();
-        }
+function openEditModal() {
+    const { editModal } = getDomElements();
+    editModal.classList.replace('hidden', 'flex');
+    setTimeout(() => lucide.createIcons(), 50);
+}
 
-        // View modal handlers
-        function openViewModal() {
-            const { viewModal } = getDomElements();
-            if (viewModal) {
-                viewModal.classList.remove('hidden');
-                viewModal.classList.add('flex');
-                setTimeout(() => lucide.createIcons(), 100);
-            }
-        }
-        function closeViewDetailsModal() {
-            const { viewModal } = getDomElements();
-            if (viewModal) {
-                viewModal.classList.add('hidden');
-                viewModal.classList.remove('flex');
-            }
-        }
-        function viewMovieDetails(title, genreName, release_year, rating, director, synopsis) {
-            const { viewModalTitle, viewTitle, viewDirector, viewReleaseYear, viewRating, viewGenre, viewSynopsis } = getDomElements();
-            viewModalTitle.textContent = 'Film Details: ' + title;
-            viewTitle.textContent = title;
-            viewDirector.textContent = director || 'N/A';
-            viewReleaseYear.textContent = release_year || 'N/A';
-            viewRating.textContent = rating || 'N/A';
-            viewGenre.textContent = genreName || 'N/A';
-            viewSynopsis.textContent = synopsis || 'No synopsis provided.';
-            openViewModal();
-        }
+function closeEditMovieModal() {
+    getDomElements().editModal.classList.replace('flex', 'hidden');
+}
 
-        // Initialization
-        function initializeDashboardScripts() {
-            lucide.createIcons();
+function openAddMovieModal() {
+    const { addModal } = getDomElements();
+    if (addModal) {
+        addModal.classList.replace('hidden', 'flex');
+        setTimeout(() => lucide.createIcons(), 50);
+    }
+}
 
-            const flashMessage = document.getElementById('flash-message');
-            if (flashMessage) {
-                setTimeout(() => {
-                    flashMessage.style.transition = 'opacity 0.5s ease-out';
-                    flashMessage.style.opacity = '0';
-                    setTimeout(() => flashMessage.remove(), 500);
-                }, 3000);
-            }
-        }
+function closeAddMovieModal() {
+    const { addModal } = getDomElements();
+    if (addModal) addModal.classList.replace('flex', 'hidden');
+}
 
-        document.addEventListener('DOMContentLoaded', initializeDashboardScripts);
-        document.addEventListener('livewire:navigated', initializeDashboardScripts);
-        document.addEventListener('turbo:load', initializeDashboardScripts);
-        document.addEventListener('turbolinks:load', initializeDashboardScripts);
-    </script>
+function openViewModal() {
+    const { viewModal } = getDomElements();
+    viewModal.classList.replace('hidden', 'flex');
+    setTimeout(() => lucide.createIcons(), 50);
+}
+
+function closeViewDetailsModal() {
+    getDomElements().viewModal.classList.replace('flex', 'hidden');
+}
+
+/* ===========================
+   INITIALIZATION
+=========================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+
+    // Auto-hide Flash Toast
+    const flash = document.getElementById('flash-message');
+    if (flash) {
+        setTimeout(() => {
+            flash.style.opacity = '0';
+            flash.style.transform = 'translateX(20px)';
+            setTimeout(() => flash.remove(), 500);
+        }, 4000);
+    }
+});
+</script>
+
 </x-layouts.app>
