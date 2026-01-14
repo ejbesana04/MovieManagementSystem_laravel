@@ -15,27 +15,48 @@ class MovieController extends Controller
      */
     public function index(Request $request)
     {
+        /**
+         * 1️⃣ FEATURED MOVIES (TOP 4 RATED)
+         * This will NEVER be affected by search or filters
+         */
+        $featuredMovies = Movie::with('genre')
+            ->orderByDesc('rating')
+            ->take(4)
+            ->get();
+
+        /**
+         * 2️⃣ SEARCH & FILTER (TABLE ONLY)
+         */
         $query = Movie::with('genre');
 
-        // Search Logic
+        // Search by title or director
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
                   ->orWhere('director', 'like', "%{$searchTerm}%");
             });
         }
 
-        // Genre Filtering
-        if ($request->filled('genre_filter') && $request->genre_filter != '') {
+        // Filter by genre
+        if ($request->filled('genre_filter')) {
             $query->where('genre_id', $request->genre_filter);
         }
 
         $movies = $query->latest()->get();
+
+        /**
+         * 3️⃣ OTHER DATA
+         */
         $genres = Genre::all();
         $totalMovies = Movie::count();
 
-        return view('dashboard', compact('movies', 'genres', 'totalMovies'));
+        return view('dashboard', compact(
+            'movies',
+            'featuredMovies',
+            'genres',
+            'totalMovies'
+        ));
     }
 
     /**
@@ -54,8 +75,8 @@ class MovieController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('movie-posters', 'public');
-            $validated['photo'] = $photoPath;
+            $validated['photo'] = $request->file('photo')
+                ->store('movie-posters', 'public');
         }
 
         Movie::create($validated);
@@ -79,12 +100,12 @@ class MovieController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Delete old photo if exists
             if ($movie->photo) {
                 Storage::disk('public')->delete($movie->photo);
             }
-            $photoPath = $request->file('photo')->store('movie-posters', 'public');
-            $validated['photo'] = $photoPath;
+
+            $validated['photo'] = $request->file('photo')
+                ->store('movie-posters', 'public');
         }
 
         $movie->update($validated);
@@ -93,7 +114,7 @@ class MovieController extends Controller
     }
 
     /**
-     * Move movie to trash (Soft Delete)
+     * Soft delete movie
      */
     public function destroy(Movie $movie)
     {
@@ -106,22 +127,29 @@ class MovieController extends Controller
      */
     public function trash()
     {
-        $movies = Movie::onlyTrashed()->with('genre')->latest('deleted_at')->get();
+        $movies = Movie::onlyTrashed()
+            ->with('genre')
+            ->latest('deleted_at')
+            ->get();
+
         return view('trash', compact('movies'));
     }
 
     /**
-     * Restore a trashed movie
+     * Restore trashed movie
      */
     public function restore($id)
     {
         $movie = Movie::withTrashed()->findOrFail($id);
         $movie->restore();
-        return redirect()->route('movies.trash')->with('success', 'Movie restored successfully.');
+
+        return redirect()
+            ->route('movies.trash')
+            ->with('success', 'Movie restored successfully.');
     }
 
     /**
-     * Permanently delete a movie
+     * Permanently delete movie
      */
     public function forceDelete($id)
     {
@@ -132,34 +160,34 @@ class MovieController extends Controller
         }
 
         $movie->forceDelete();
-        return redirect()->route('movies.trash')->with('success', 'Movie permanently deleted.');
+
+        return redirect()
+            ->route('movies.trash')
+            ->with('success', 'Movie permanently deleted.');
     }
 
     /**
-     * Export Movies to PDF
+     * Export movies to PDF
      */
     public function export(Request $request)
-{
-    $query = Movie::with('genre');
+    {
+        $query = Movie::with('genre');
 
-    // Search filter
-    if ($request->filled('search')) {
-        $searchTerm = $request->search;
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('title', 'like', "%{$searchTerm}%")
-              ->orWhere('director', 'like', "%{$searchTerm}%");
-        });
-    }
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', "%{$request->search}%")
+                  ->orWhere('director', 'like', "%{$request->search}%");
+            });
+        }
 
-    // Genre filter
-    if ($request->filled('genre_filter')) {
-        $query->where('genre_id', $request->genre_filter);
-    }
+        if ($request->filled('genre_filter')) {
+            $query->where('genre_id', $request->genre_filter);
+        }
 
-    $movies = $query->latest()->get();
-    $filename = 'movies_export_' . now()->format('Y-m-d') . '.pdf';
+        $movies = $query->latest()->get();
+        $filename = 'movies_export_' . now()->format('Y-m-d') . '.pdf';
 
-    $html = '<!DOCTYPE html>
+        $html = '<!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
@@ -260,11 +288,11 @@ class MovieController extends Controller
     </body>
     </html>';
 
-    $dompdf = new Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'landscape');
-    $dompdf->render();
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
 
-    return $dompdf->stream($filename, ['Attachment' => true]);
+        return $dompdf->stream($filename, ['Attachment' => true]);
     }
 }

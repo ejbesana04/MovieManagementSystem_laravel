@@ -9,9 +9,9 @@
 
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Movie Trash</h1>
+                <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Film Trash</h1>
                 <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    Manage deleted movies — restore them to the library or delete them permanently.
+                    Manage deleted films — restore them to the library or delete them permanently.
                 </p>
             </div>
             <a href="{{ route('dashboard') }}"
@@ -28,7 +28,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Movies in Trash</p>
+                    <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Films in Trash</p>
                     <h3 class="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">{{ $movies->count() }}</h3>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                             </svg>
                             <h3 class="mt-2 text-sm font-medium text-neutral-900 dark:text-neutral-100">Trash is empty</h3>
-                            <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">No deleted movies found.</p>
+                            <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">No deleted films found.</p>
                         </div>
                     </div>
                 @else

@@ -15,26 +15,10 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('dashboard', function () {
-    $query = App\Models\Movie::with('genre');
+Route::get('/dashboard', [MovieController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-    if (request()->filled('search')) {
-        $searchTerm = request('search');
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('title', 'like', "%{$searchTerm}%")
-              ->orWhere('director', 'like', "%{$searchTerm}%");
-        });
-    }
-
-    if (request()->filled('genre_filter') && request('genre_filter') != '') {
-        $query->where('genre_id', request('genre_filter'));
-    }
-
-    $movies = $query->latest()->get();
-    $genres = App\Models\Genre::all();
-
-    return view('dashboard', compact('movies', 'genres'));
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
