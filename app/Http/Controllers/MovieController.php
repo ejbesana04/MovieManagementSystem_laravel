@@ -246,7 +246,7 @@ class MovieController extends Controller
     </head>
     <body>
         <div class="container">
-            <h1>🎬 Movie Vault – Export Report</h1>
+            <h1>Movie Vault – Export Report</h1>
 
             <div class="export-info">
                 Exported on: ' . now()->format('F d, Y \a\t h:i A') . '<br>

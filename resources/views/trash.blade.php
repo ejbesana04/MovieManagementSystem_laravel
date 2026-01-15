@@ -1,11 +1,14 @@
 <x-layouts.app :title="__('Movie Trash')">
     
+    {{-- Add Font Awesome CDN --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <div class="flex h-full w-full flex-1 flex-col gap-8 p-6 lg:p-10 font-sans bg-slate-50/50 relative">
 
         {{-- Flash Message (Floating Toast Style) --}}
         @if(session('success'))
             <div id="flash-message" class="fixed top-6 right-6 z-[100] rounded-xl bg-emerald-500 text-white px-4 py-3 shadow-xl flex items-center gap-2 animate-in slide-in-from-right-5 transition-all duration-500">
-                <i data-lucide="check-circle" class="h-5 w-5"></i>
+                <i class="fas fa-check-circle text-lg"></i>
                 <span class="font-bold text-sm">{{ session('success') }}</span>
             </div>
         @endif
@@ -18,7 +21,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-2">
                 <div class="flex items-center gap-5">
                     <div class="h-16 w-16 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center shadow-inner border border-red-100">
-                        <i data-lucide="trash-2" class="h-8 w-8"></i>
+                        <i class="fas fa-trash-alt text-2xl"></i>
                     </div>
                     <div>
                         <h1 class="text-2xl font-black text-slate-900">Recycle Bin</h1>
@@ -35,7 +38,7 @@
                     </div>
                     <div class="h-10 w-px bg-slate-200 hidden md:block"></div>
                     <a href="{{ route('dashboard') }}" class="group flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-600 hover:bg-white hover:shadow-md transition-all">
-                        <i data-lucide="arrow-left" class="h-4 w-4 group-hover:-translate-x-1 transition-transform"></i> Dashboard
+                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Dashboard
                     </a>
                 </div>
             </div>
@@ -47,8 +50,8 @@
                 <div class="flex-1 flex flex-col items-center justify-center p-12 text-center">
                     <div class="relative mb-6">
                         <div class="absolute inset-0 bg-emerald-100 rounded-full blur-xl opacity-50"></div>
-                        <div class="relative bg-emerald-50 p-6 rounded-full ring-8 ring-emerald-50/30">
-                            <i data-lucide="sparkles" class="h-10 w-10 text-emerald-500"></i>
+                        <div class="relative bg-emerald-50 p-6 rounded-full ring-8 ring-emerald-50/30 flex items-center justify-center">
+                            <i class="fas fa-sparkles text-emerald-500 text-3xl"></i>
                         </div>
                     </div>
                     <h3 class="text-xl font-black text-slate-800">Trash is Empty!</h3>
@@ -88,7 +91,7 @@
                                     </td>
                                     <td class="px-6 py-5">
                                         <div class="flex items-center gap-2 text-sm text-slate-500 font-medium bg-slate-50 w-fit px-3 py-1 rounded-lg border border-slate-100">
-                                            <i data-lucide="calendar-clock" class="h-4 w-4 text-slate-400"></i>
+                                            <i class="fas fa-calendar-alt text-slate-400"></i>
                                             {{ $movie->deleted_at->format('M d, Y') }}
                                         </div>
                                     </td>
@@ -97,7 +100,7 @@
                                             <form method="POST" action="{{ route('movies.restore', $movie->id) }}">
                                                 @csrf
                                                 <button type="submit" class="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2.5 text-xs font-bold text-emerald-700 transition-all hover:bg-emerald-500 hover:text-white hover:shadow-lg hover:shadow-emerald-200">
-                                                    <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i> Restore
+                                                    <i class="fas fa-redo"></i> Restore
                                                 </button>
                                             </form>
 
@@ -105,7 +108,7 @@
                                                 @csrf @method('DELETE')
                                                 <button type="submit" onclick="return confirm('WARNING: This will permanently remove the file. Continue?')" 
                                                     class="flex items-center gap-2 rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-500 transition-all hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-200">
-                                                    <i data-lucide="x" class="h-3.5 w-3.5"></i> Delete
+                                                    <i class="fas fa-times"></i> Delete
                                                 </button>
                                             </form>
                                         </div>
@@ -119,10 +122,7 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        lucide.createIcons();
-
         // Flash Message Logic - Toast Fade Out
         const flashMessage = document.getElementById('flash-message');
         if (flashMessage) {

@@ -1,11 +1,14 @@
 <x-layouts.app :title="__('Genres')">
 
+    {{-- Add Font Awesome CDN --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <div class="flex h-full w-full flex-1 flex-col gap-8 p-6 lg:p-10 font-sans bg-slate-50/50">
 
         {{-- Flash Message --}}
         @if(session('success'))
             <div id="flash-message" class="fixed top-6 right-6 z-50 rounded-xl bg-emerald-500 text-white px-4 py-3 shadow-xl flex items-center gap-2 animate-in slide-in-from-right-5">
-                <i data-lucide="check-circle" class="h-5 w-5"></i>
+                <i class="fas fa-check-circle text-lg"></i>
                 <span class="font-bold text-sm">{{ session('success') }}</span>
             </div>
         @endif
@@ -14,10 +17,10 @@
         <div class="relative overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/50 ring-1 ring-black/5">
             {{-- Decorative Header --}}
             <div class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 px-8 py-6 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="tags" class="h-32 w-32 text-white transform rotate-12"></i></div>
+                <div class="absolute top-0 right-0 p-4 opacity-10 flex items-center justify-center"><i class="fas fa-tags text-8xl text-white transform rotate-12"></i></div>
                 <div class="relative z-10">
                     <h2 class="text-2xl font-black text-white flex items-center gap-3">
-                        <span class="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><i data-lucide="plus" class="h-6 w-6 text-white"></i></span>
+                        <span class="p-2 bg-white/20 rounded-lg backdrop-blur-sm flex items-center justify-center"><i class="fas fa-plus text-white text-xl"></i></span>
                         New Category
                     </h2>
                     <p class="text-violet-100 text-sm mt-2 font-medium max-w-lg">Create a new genre to organize your film library. Genres help filter and analyze your collection effectively.</p>
@@ -31,7 +34,7 @@
                     <div class="flex-1 w-full">
                         <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">Genre Name</label>
                         <div class="relative">
-                            <i data-lucide="type" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                            <i class="fas fa-font absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                             <input type="text" name="name" value="{{ old('name') }}" required placeholder="e.g. Science Fiction" 
                                    class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 py-3 text-sm font-semibold focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10 transition-all">
                         </div>
@@ -41,7 +44,7 @@
                     <div class="flex-[2] w-full">
                         <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">Description <span class="text-slate-300 font-normal">(Optional)</span></label>
                         <div class="relative">
-                            <i data-lucide="file-text" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                            <i class="fas fa-file-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                             <input type="text" name="description" value="{{ old('description') }}" placeholder="Brief description of this category..." 
                                    class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 py-3 text-sm font-semibold focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-500/10 transition-all">
                         </div>
@@ -59,7 +62,7 @@
         {{-- Divider --}}
         <div class="flex items-center gap-4 py-2">
             <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="library" class="h-6 w-6 text-slate-400"></i> Catalog
+                <i class="fas fa-book text-slate-400"></i> Catalog
             </h3>
             <div class="h-px bg-slate-200 flex-1"></div>
             <span class="text-xs font-bold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">{{ $genres->count() }} Categories</span>
@@ -79,12 +82,12 @@
                         <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             <button onclick="editGenre(@js($genre), '{{ route('genres.update', $genre->id) }}')" 
                             class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors"
-                            ><i data-lucide="edit-3" class="h-4 w-4"></i>
+                            ><i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ route('genres.destroy', $genre) }}" method="POST" onsubmit="return confirm('Delete {{ $genre->name }}?')">
                                 @csrf @method('DELETE')
                                 <button class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-colors">
-                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
                         </div>
@@ -96,13 +99,13 @@
                     <div class="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Movies in Genre</span>
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                            <i data-lucide="film" class="h-3 w-3"></i> {{ $genre->movies_count }}
+                            <i class="fas fa-film text-xs"></i> {{ $genre->movies_count }}
                         </span>
                     </div>
                 </div>
             @empty
                 <div class="col-span-full py-20 flex flex-col items-center justify-center text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
-                    <div class="bg-white p-4 rounded-full shadow-sm mb-4"><i data-lucide="layers" class="h-8 w-8 text-slate-300"></i></div>
+                    <div class="bg-white p-4 rounded-full shadow-sm mb-4 flex items-center justify-center"><i class="fas fa-layer-group text-slate-300 text-3xl"></i></div>
                     <p class="text-slate-500 font-bold">No genres found.</p>
                     <p class="text-sm text-slate-400 mt-1">Create your first category above.</p>
                 </div>
@@ -116,8 +119,8 @@
     <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl p-8 animate-in zoom-in-95">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-bold text-slate-800">Edit Genre</h2>
-            <button onclick="closeGenreModal()" class="text-slate-400 hover:text-slate-600">
-                <i data-lucide="x" class="h-5 w-5"></i>
+            <button onclick="closeGenreModal()" class="text-slate-400 hover:text-slate-600 flex items-center justify-center">
+                <i class="fas fa-times"></i>
             </button>
         </div>
 
@@ -135,7 +138,7 @@
                     {{-- THIS IS THE ERROR MESSAGE --}}
                     @error('name')
                         <p class="mt-1 text-xs font-bold text-red-500 animate-pulse">
-                            <i data-lucide=\"alert-circle\" class=\"inline h-3 w-3 mr-1\"></i> {{ $message }}
+                            <i class="fas fa-exclamation-circle mr-1"></i> {{ $message }}
                         </p>
                     @enderror
                 </div>
@@ -156,14 +159,11 @@
     </div>
 </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-<script>
+    <script>
     /**
      * Standardized initialization
      */
     document.addEventListener('DOMContentLoaded', () => {
-        lucide.createIcons();
-        
         // Auto-hide Flash Message with a smooth fade
         const flash = document.getElementById('flash-message');
         if (flash) {
@@ -194,8 +194,6 @@
     // Open Modal
     const modal = document.getElementById('editGenreModal');
     modal.classList.replace('hidden', 'flex');
-    
-    setTimeout(() => lucide.createIcons(), 50);
 }
 
     function closeGenreModal() {

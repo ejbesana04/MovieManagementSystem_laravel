@@ -1,11 +1,14 @@
 <x-layouts.app :title="__('Dashboard')">
     
+    {{-- Add Font Awesome CDN --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <div class="flex h-full w-full flex-1 flex-col gap-8 p-6 lg:p-10 bg-slate-50/50 text-slate-800 font-sans relative">
 
         {{-- Flash Message (Floating Toast) --}}
         @if(session('success'))
             <div id="flash-message" class="fixed top-6 right-6 z-[100] rounded-xl bg-emerald-500 text-white px-4 py-3 shadow-xl flex items-center gap-2 animate-in slide-in-from-right-5 transition-all duration-500">
-                <i data-lucide="check-circle" class="h-5 w-5"></i>
+                <i class="fas fa-check-circle text-lg"></i>
                 <span class="font-bold text-sm">{{ session('success') }}</span>
             </div>
         @endif
@@ -39,11 +42,13 @@
                         <h3 class="{{ $textBold }}">{{ $movies->count() }} <span class="text-lg font-medium text-slate-400">Films</span></h3>
                     </div>
                     <div class="{{ $iconBaseClass }} bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white">
-                        <i data-lucide="film" class="h-6 w-6"></i>
+                        <i class="fas fa-film text-xl"></i>
                     </div>
                 </div>
                 {{-- Decorative background icon --}}
-                <i data-lucide="film" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
+                <div class="absolute -bottom-4 -right-4 flex items-center justify-center text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12">
+                    <i class="fas fa-film text-8xl"></i>
+                </div>
             </div>
 
             {{-- Total Genres --}}
@@ -54,10 +59,12 @@
                         <h3 class="{{ $textBold }}">{{ $genres->count() }} <span class="text-lg font-medium text-slate-400">Genres</span></h3>
                     </div>
                     <div class="{{ $iconBaseClass }} bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white">
-                        <i data-lucide="layers" class="h-6 w-6"></i>
+                        <i class="fas fa-layer-group text-xl"></i>
                     </div>
                 </div>
-                 <i data-lucide="layers" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
+                 <div class="absolute -bottom-4 -right-4 flex items-center justify-center text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12">
+                    <i class="fas fa-layer-group text-8xl"></i>
+                </div>
             </div>
 
             {{-- Average Rating --}}
@@ -68,10 +75,12 @@
                         <h3 class="{{ $textBold }}">{{ number_format($movies->avg('rating') ?: 0, 1) }} <span class="text-lg font-medium text-slate-400">/10</span></h3>
                     </div>
                     <div class="{{ $iconBaseClass }} bg-amber-50 text-amber-500 group-hover:bg-amber-500 group-hover:text-white">
-                        <i data-lucide="star" class="h-6 w-6 fill-current"></i>
+                        <i class="fas fa-star text-xl"></i>
                     </div>
                 </div>
-                <i data-lucide="star" class="absolute -bottom-4 -right-4 h-32 w-32 text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12"></i>
+                <div class="absolute -bottom-4 -right-4 flex items-center justify-center text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity rotate-12">
+                    <i class="fas fa-star text-8xl"></i>
+                </div>
             </div>
         </div>
 
@@ -82,11 +91,11 @@
             <div class="lg:col-span-2 rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
                 <div class="{{ $headerClass }}">
                     <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <span class="bg-amber-100 p-1.5 rounded-lg"><i data-lucide="award" class="h-5 w-5 text-amber-600"></i></span>
+                        <span class="bg-amber-100 p-1.5 rounded-lg flex items-center justify-center"><i class="fas fa-award text-amber-600 text-lg"></i></span>
                         Top Rated Films
                     </h2>
                     <button type="button" onclick="resetModalForAdd()" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-slate-200 hover:bg-blue-600 hover:shadow-blue-200 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                        <i data-lucide="plus" class="h-4 w-4"></i> Add Film
+                        <i class="fas fa-plus"></i> Add Film
                     </button>
                 </div>
                 
@@ -98,7 +107,7 @@
                                 <img src="{{ Storage::url($movie->photo) }}" alt="{{ $movie->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                              @else
                                 <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-300">
-                                    <i data-lucide="image" class="h-10 w-10 mb-2"></i>
+                                    <i class="fas fa-image text-4xl mb-2"></i>
                                     <span class="text-xs font-bold uppercase">No Poster</span>
                                 </div>
                              @endif
@@ -108,7 +117,7 @@
                                 <div class="flex items-center gap-2 mt-2 mb-3">
                                     <span class="text-xs font-bold text-slate-300">{{ $movie->release_year }}</span>
                                     <span class="text-xs font-bold text-amber-400 flex items-center gap-1 bg-white/10 px-1.5 py-0.5 rounded backdrop-blur-md">
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400"></i> {{ $movie->rating }}
+                                        <i class="fas fa-star text-amber-400 text-xs"></i> {{ $movie->rating }}
                                     </span>
                                 </div>
                                 <button onclick="viewMovieDetails(@js($movie))"
@@ -119,7 +128,7 @@
                         </div>
                     @empty
                         <div class="col-span-4 py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
-                            <i data-lucide="film" class="h-8 w-8 text-slate-300 mb-2"></i>
+                            <i class="fas fa-film text-3xl text-slate-300 mb-2"></i>
                             <p class="text-slate-500 font-bold text-sm">No top rated movies yet.</p>
                         </div>
                     @endforelse
@@ -130,7 +139,7 @@
             <div class="lg:col-span-1 rounded-2xl bg-white p-6 shadow-sm border border-slate-100 h-full">
                 <div class="{{ $headerClass }}">
                     <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <span class="bg-blue-100 p-1.5 rounded-lg"><i data-lucide="activity" class="h-5 w-5 text-blue-600"></i></span>
+                        <span class="bg-blue-100 p-1.5 rounded-lg flex items-center justify-center"><i class="fas fa-chart-line text-blue-600 text-lg"></i></span>
                         Activity
                     </h3>
                 </div>
@@ -138,16 +147,16 @@
                 <div class="relative pl-4 space-y-6 before:absolute before:left-[23px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
                     @php
                         $activities = [
-                            ['icon' => 'check-circle-2', 'color' => 'text-emerald-600', 'bg' => 'bg-emerald-100', 'text' => "Movie <strong>'Dune'</strong> updated", 'time' => '1 min ago'],
-                            ['icon' => 'plus', 'color' => 'text-blue-600', 'bg' => 'bg-blue-100', 'text' => "Movie <strong>'Inception'</strong> added", 'time' => '3 hrs ago'],
-                            ['icon' => 'alert-triangle', 'color' => 'text-amber-600', 'bg' => 'bg-amber-100', 'text' => "<strong>DB backup</strong> overdue", 'time' => '8 hrs ago'],
-                            ['icon' => 'trash-2', 'color' => 'text-red-600', 'bg' => 'bg-red-100', 'text' => "Movie <strong>'Avatar'</strong> deleted", 'time' => '2 days ago'],
+                            ['icon' => 'fas fa-check-circle', 'color' => 'text-emerald-600', 'bg' => 'bg-emerald-100', 'text' => "Movie <strong>'Dune'</strong> updated", 'time' => '1 min ago'],
+                            ['icon' => 'fas fa-plus', 'color' => 'text-blue-600', 'bg' => 'bg-blue-100', 'text' => "Movie <strong>'Inception'</strong> added", 'time' => '3 hrs ago'],
+                            ['icon' => 'fas fa-exclamation-triangle', 'color' => 'text-amber-600', 'bg' => 'bg-amber-100', 'text' => "<strong>DB backup</strong> overdue", 'time' => '8 hrs ago'],
+                            ['icon' => 'fas fa-trash-alt', 'color' => 'text-red-600', 'bg' => 'bg-red-100', 'text' => "Movie <strong>'Avatar'</strong> deleted", 'time' => '2 days ago'],
                         ];
                     @endphp
                     @foreach($activities as $act)
                         <div class="relative flex items-start gap-4">
                             <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-white {{ $act['bg'] }} shadow-sm">
-                                <i data-lucide="{{ $act['icon'] }}" class="h-5 w-5 {{ $act['color'] }}"></i>
+                                <i class="{{ $act['icon'] }} {{ $act['color'] }} text-base"></i>
                             </div>
                             <div class="pt-1">
                                 <p class="text-sm text-slate-600 leading-snug">{!! $act['text'] !!}</p>
@@ -165,14 +174,14 @@
                 <div class="md:col-span-5 relative">
                     <label class="{{ $labelClass }}">Search Vault</label>
                     <div class="relative">
-                        <i data-lucide="search" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-base"></i>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Find title, director..." class="{{ $inputClass }} pl-11">
                     </div>
                 </div>
                 <div class="md:col-span-4">
                     <label class="{{ $labelClass }}">Filter Genre</label>
                     <div class="relative">
-                        <i data-lucide="filter" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+                        <i class="fas fa-filter absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-base"></i>
                         <select name="genre_filter" class="{{ $inputClass }} pl-11 appearance-none cursor-pointer">
                             <option value="">All Categories</option>
                             @foreach($genres as $genre)
@@ -192,13 +201,13 @@
         <div class="rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
             <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="list-music" class="h-5 w-5 text-slate-400"></i> Film List
+                    <i class="fas fa-list text-slate-400"></i> Film List
                 </h2>
                 <form method="GET" action="{{ route('movies.export') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <input type="hidden" name="genre_filter" value="{{ request('genre_filter') }}">
                     <button type="submit" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">
-                        <i data-lucide="file-down" class="h-4 w-4"></i> Export PDF
+                        <i class="fas fa-file-download"></i> Export PDF
                     </button>
                 </form>
             </div>
@@ -227,7 +236,7 @@
                                             <img src="{{ Storage::url($movie->photo) }}" alt="{{ $movie->title }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500">
                                         @else
                                             <div class="flex h-full w-full items-center justify-center bg-slate-50">
-                                                <i data-lucide="image" class="h-6 w-6 text-slate-300"></i>
+                                                <i class="fas fa-image text-slate-300 text-xl"></i>
                                             </div>
                                         @endif
                                     </div>
@@ -236,9 +245,9 @@
                                 <td class="px-6 py-4 align-middle">
                                     <p class="font-bold text-slate-800 text-lg group-hover:text-blue-700 transition-colors">{{ $movie->title }}</p>
                                     <div class="flex items-center gap-3 mt-1 text-sm text-slate-500">
-                                        <span class="flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> {{ $movie->release_year }}</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-calendar"></i> {{ $movie->release_year }}</span>
                                         <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                                        <span class="flex items-center gap-1"><i data-lucide="user" class="h-3.5 w-3.5"></i> {{ $movie->director }}</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-user"></i> {{ $movie->director }}</span>
                                     </div>
                                 </td>
                                 
@@ -250,7 +259,7 @@
                                 
                                 <td class="px-6 py-4 align-middle">
                                     <div class="flex items-center gap-1.5 font-bold {{ $movie->rating >= 8 ? 'text-emerald-600' : ($movie->rating >= 5 ? 'text-amber-600' : 'text-slate-400') }}">
-                                        <i data-lucide="star" class="h-4 w-4 fill-current"></i>
+                                        <i class="fas fa-star"></i>
                                         {{ $movie->rating }}
                                     </div>
                                 </td>
@@ -258,16 +267,16 @@
                                 <td class="px-6 py-4 align-middle text-right">
                                     <div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                                         <button
-    class="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors edit-btn"
-    data-movie='@json($movie)'>
-    <i data-lucide="pencil" class="h-4 w-4"></i>
-</button>
+                                            class="p-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors edit-btn"
+                                            data-movie='@json($movie)'>
+                                            <i class="fas fa-edit"></i>
+                                        </button>
 
                                         
                                         <form action="{{ route('movies.destroy', $movie) }}" method="POST" class="inline" onsubmit="return confirm('Move to trash?')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="p-2 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-                                                <i data-lucide="trash-2" class="h-4 w-4"></i>
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -295,7 +304,7 @@
         <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-8 animate-in zoom-in-95">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="addModalTitle" class="text-2xl font-black text-slate-800">New Entry</h2>
-                <button onclick="closeAddMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+                <button onclick="closeAddMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="addMovieForm" method="POST" action="{{ route('movies.store') }}" enctype="multipart/form-data">
                 @csrf
@@ -335,7 +344,7 @@
         <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="modalTitle" class="text-2xl font-black text-slate-800">Edit Details</h2>
-                <button onclick="closeEditMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600"><i data-lucide="x" class="h-6 w-6"></i></button>
+                <button onclick="closeEditMovieModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="editMovieForm" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
@@ -376,21 +385,21 @@
         <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden relative">
             <div class="h-32 bg-slate-900 w-full relative overflow-hidden">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cube-coat.png')]"></div>
-                <button onclick="closeViewDetailsModal()" class="absolute top-4 right-4 bg-white/10 p-2 rounded-full text-white hover:bg-white/20"><i data-lucide="x" class="h-5 w-5"></i></button>
+                <button onclick="closeViewDetailsModal()" class="absolute top-4 right-4 bg-white/10 p-2 rounded-full text-white hover:bg-white/20 flex items-center justify-center"><i class="fas fa-times"></i></button>
             </div>
             <div class="px-8 pb-8">
                 <div class="flex justify-between items-end -mt-12 mb-6 relative z-10">
                     <div>
                         <div class="bg-white p-1 rounded-xl shadow-lg inline-block mb-4">
                             <div class="h-24 w-16 bg-slate-200 rounded-lg flex items-center justify-center overflow-hidden">
-                                <i data-lucide="film" class="h-8 w-8 text-slate-400"></i>
+                                <i class="fas fa-film text-slate-400 text-2xl"></i>
                             </div>
                         </div>
                         <h2 id="view_title" class="text-3xl font-black text-slate-800 leading-none"></h2>
                     </div>
                     <div class="text-right">
                         <div class="flex items-center gap-1 text-amber-500 font-black text-2xl justify-end">
-                            <span id="view_rating"></span> <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+                            <span id="view_rating"></span> <i class="fas fa-star"></i>
                         </div>
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Rating</span>
                     </div>
@@ -416,8 +425,6 @@
             </div>
         </div>
     </div>
-
-<script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
 /**
@@ -545,7 +552,6 @@ function resetModalForAdd() {
 function openEditModal() {
     const { editModal } = getDomElements();
     editModal.classList.replace('hidden', 'flex');
-    setTimeout(() => lucide.createIcons(), 50);
 }
 
 function closeEditMovieModal() {
@@ -556,7 +562,6 @@ function openAddMovieModal() {
     const { addModal } = getDomElements();
     if (addModal) {
         addModal.classList.replace('hidden', 'flex');
-        setTimeout(() => lucide.createIcons(), 50);
     }
 }
 
@@ -568,7 +573,6 @@ function closeAddMovieModal() {
 function openViewModal() {
     const { viewModal } = getDomElements();
     viewModal.classList.replace('hidden', 'flex');
-    setTimeout(() => lucide.createIcons(), 50);
 }
 
 function closeViewDetailsModal() {
@@ -580,8 +584,6 @@ function closeViewDetailsModal() {
 =========================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
-
     // Auto-hide Flash Toast
     const flash = document.getElementById('flash-message');
     if (flash) {
